@@ -38,6 +38,8 @@ func main() {
 	http.HandleFunc("GET /admin/categories", admin.GetAllCategories)
 	http.HandleFunc("POST /admin/categories/add", admin.CreateCategorie)
 	http.HandleFunc("OPTIONS /admin/categories/add", admin.CreateCategorie)
+	http.HandleFunc("PUT /admin/categories/modify/{id}", admin.UpdateCategorie)
+	http.HandleFunc("OPTIONS /admin/categories/modify/{id}", admin.UpdateCategorie)
 	http.HandleFunc("DELETE /admin/categories/delete/{id}", admin.DeleteCategorie)
 	http.HandleFunc("OPTIONS /admin/categories/delete/{id}", admin.DeleteCategorie)
 
@@ -47,6 +49,8 @@ func main() {
 	http.HandleFunc("OPTIONS /admin/annonces/validate/{id}", admin.ValidateAnnonce)
 	http.HandleFunc("PUT /admin/annonces/refuse/{id}", admin.RefuseAnnonce)
 	http.HandleFunc("OPTIONS /admin/annonces/refuse/{id}", admin.RefuseAnnonce)
+	http.HandleFunc("DELETE /admin/annonces/delete/{id}", admin.DeleteAnnonce)
+	http.HandleFunc("OPTIONS /admin/annonces/delete/{id}", admin.DeleteAnnonce)
 
 	// Evenements
 	http.HandleFunc("GET /admin/evenements", admin.GetAllEvenements)
@@ -56,6 +60,8 @@ func main() {
 	http.HandleFunc("OPTIONS /admin/evenements/validate/{id}", admin.ValidateEvenement)
 	http.HandleFunc("PUT /admin/evenements/refuse/{id}", admin.RefuseEvenement)
 	http.HandleFunc("OPTIONS /admin/evenements/refuse/{id}", admin.RefuseEvenement)
+	http.HandleFunc("DELETE /admin/evenements/delete/{id}", admin.DeleteEvenement)
+	http.HandleFunc("OPTIONS /admin/evenements/delete/{id}", admin.DeleteEvenement)
 
 	// Conteneurs
 	http.HandleFunc("GET /admin/conteneurs", admin.GetAllConteneurs)
@@ -63,15 +69,35 @@ func main() {
 	http.HandleFunc("OPTIONS /admin/conteneurs/add", admin.CreateConteneur)
 	http.HandleFunc("PUT /admin/conteneurs/modify/{id}", admin.UpdateConteneur)
 	http.HandleFunc("OPTIONS /admin/conteneurs/modify/{id}", admin.UpdateConteneur)
+	http.HandleFunc("DELETE /admin/conteneurs/delete/{id}", admin.DeleteConteneur)
+	http.HandleFunc("OPTIONS /admin/conteneurs/delete/{id}", admin.DeleteConteneur)
 
 	// Depots
 	http.HandleFunc("GET /admin/depots", admin.GetAllDepots)
 	http.HandleFunc("PUT /admin/depots/validate/{id}", admin.ValidateDepot)
 	http.HandleFunc("OPTIONS /admin/depots/validate/{id}", admin.ValidateDepot)
 
-	// Commandes et Abonnements
+	// Commandes
 	http.HandleFunc("GET /admin/commandes", admin.GetAllCommandes)
+
+	// Abonnements
 	http.HandleFunc("GET /admin/abonnements", admin.GetAllAbonnements)
+	http.HandleFunc("PUT /admin/abonnements/statut/{id}", admin.UpdateAbonnementStatut)
+	http.HandleFunc("OPTIONS /admin/abonnements/statut/{id}", admin.UpdateAbonnementStatut)
+	http.HandleFunc("DELETE /admin/abonnements/delete/{id}", admin.DeleteAbonnement)
+	http.HandleFunc("OPTIONS /admin/abonnements/delete/{id}", admin.DeleteAbonnement)
+
+	// Stats financières
+	http.HandleFunc("GET /admin/stats", admin.GetStats)
+
+	// Plans d'abonnement
+	http.HandleFunc("GET /admin/plans", admin.GetAllPlans)
+	http.HandleFunc("POST /admin/plans/add", admin.CreatePlan)
+	http.HandleFunc("OPTIONS /admin/plans/add", admin.CreatePlan)
+	http.HandleFunc("PUT /admin/plans/modify/{id}", admin.UpdatePlan)
+	http.HandleFunc("OPTIONS /admin/plans/modify/{id}", admin.UpdatePlan)
+	http.HandleFunc("DELETE /admin/plans/delete/{id}", admin.DeletePlan)
+	http.HandleFunc("OPTIONS /admin/plans/delete/{id}", admin.DeletePlan)
 
 	// ── PARTICULIER ──
 	http.HandleFunc("POST /particulier/annonces/add", admin.CreateAnnonceParticulier)
