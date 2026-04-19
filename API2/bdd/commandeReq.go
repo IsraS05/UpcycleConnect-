@@ -55,3 +55,36 @@ func GetAbonnements() ([]models.Abonnement, error) {
 	}
 	return abonnements, rows.Err()
 }
+
+func UpdateAbonnementStatut(id int, statut string) error {
+	result, err := Db.Exec(
+		"UPDATE pa2026.abonnement SET statut = ? WHERE id_abonnement = ?",
+		statut, id,
+	)
+	if err != nil {
+		return fmt.Errorf("UpdateAbonnementStatut : %v", err)
+	}
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return fmt.Errorf("aucun abonnement trouvé avec l'id %d", id)
+	}
+	return nil
+}
+
+func DeleteAbonnement(id int) error {
+	result, err := Db.Exec("DELETE FROM pa2026.abonnement WHERE id_abonnement = ?", id)
+	if err != nil {
+		return fmt.Errorf("DeleteAbonnement : %v", err)
+	}
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return fmt.Errorf("aucun abonnement trouvé avec l'id %d", id)
+	}
+	return nil
+}

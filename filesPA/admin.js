@@ -384,6 +384,21 @@ function renderConteneurs(conteneurs) {
   `).join('')
 }
 
+async function createConteneur() {
+  const localisation = document.getElementById('cont-localisation').value
+  const etat         = document.getElementById('cont-etat').value
+  if (!localisation) { toast('La localisation est obligatoire'); return }
+  try {
+    const res = await fetch(`${API}/admin/conteneurs/add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ localisation, etat })
+    })
+    if (res.ok) { toast('Conteneur créé'); closeModal('modal-cont'); loadConteneurs() }
+    else toast('Erreur : ' + await res.text())
+  } catch (e) { toast('Erreur serveur') }
+}
+
 function openEditConteneur(id, localisation, etat) {
   document.getElementById('cont-localisation').value = localisation
   document.getElementById('cont-etat').value = etat
