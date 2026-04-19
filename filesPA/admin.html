@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UpcycleConnect — Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="logo">
+      UpcycleConnect
+      <span>Administration</span>
+    </div>
+    <nav>
+      <div class="label">General</div>
+      <a class="active" onclick="go('dashboard', this)">Dashboard</a>
+      <a onclick="go('validations', this)">Validations</a>
+
+      <div class="label">Gestion</div>
+      <a onclick="go('users', this)">Utilisateurs</a>
+      <a onclick="go('categories', this)">Categories</a>
+      <a onclick="go('annonces', this)">Annonces</a>
+      <a onclick="go('events', this)">Evenements</a>
+      <a onclick="go('conteneurs', this)">Conteneurs</a>
+
+      <div class="label">Finance</div>
+      <a onclick="go('finances', this)">Revenus</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+
+    <div class="topbar">
+      <h1 id="page-title">Dashboard</h1>
+      <input type="text" placeholder="Rechercher...">
+      <button class="btn btn-dark">+ Nouveau</button>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="screen active" id="screen-dashboard">
+        <div class="kpis">
+          <div class="kpi"><div class="num" id="kpi-users">—</div><div class="lbl">Utilisateurs</div></div>
+          <div class="kpi"><div class="num" id="kpi-annonces">—</div><div class="lbl">Annonces</div></div>
+          <div class="kpi"><div class="num" id="kpi-events">—</div><div class="lbl">Evenements</div></div>
+          <div class="kpi"><div class="num">—</div><div class="lbl">Revenus ce mois</div></div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head">
+              <h3>Validations en attente</h3>
+              <a onclick="go('validations', null)" style="font-size:12px;cursor:pointer;color:#555">Tout voir</a>
+            </div>
+            <div id="validations-widget"><div class="placeholder">Chargement...</div></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Activite recente</h3></div>
+            <div class="placeholder">Connectez l&#x2019;API pour voir l&#x2019;activite</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UTILISATEURS -->
+      <div class="screen" id="screen-users">
+        <div class="page-header">
+          <h2>Utilisateurs</h2>
+          <button class="btn btn-dark" onclick="openModal('modal-user')">+ Ajouter</button>
+        </div>
+        <div class="tabs">
+          <button class="btn btn-dark btn-sm" onclick="filterTab(this)">Tous</button>
+          <button class="btn btn-sm" onclick="filterTab(this)">Particuliers</button>
+          <button class="btn btn-sm" onclick="filterTab(this)">Professionnels</button>
+          <button class="btn btn-sm" onclick="filterTab(this)">Salaries</button>
+          <button class="btn btn-sm" onclick="filterTab(this)">Admins</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Nom</th><th>Email</th><th>Role</th><th>Statut</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="5" style="text-align:center;color:#aaa">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CATEGORIES -->
+      <div class="screen" id="screen-categories">
+        <div class="page-header">
+          <h2>Categories</h2>
+          <button class="btn btn-dark" onclick="openModal('modal-cat')">+ Ajouter</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Libelle</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="3" style="text-align:center;color:#aaa">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ANNONCES -->
+      <div class="screen" id="screen-annonces">
+        <div class="page-header">
+          <h2>Annonces</h2>
+        </div>
+        <div class="card">
+          <table>
+            <thead>
+              <tr><th>Titre</th><th>Deposant</th><th>Categorie</th><th>Statut</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="5" style="text-align:center;color:#aaa">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- EVENEMENTS -->
+      <div class="screen" id="screen-events">
+        <div class="page-header">
+          <h2>Evenements</h2>
+        </div>
+        <div class="card">
+          <table>
+            <thead>
+              <tr><th>Titre</th><th>Date</th><th>Format</th><th>Places</th><th>Statut</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="6" style="text-align:center;color:#aaa">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- VALIDATIONS -->
+      <div class="screen" id="screen-validations">
+        <div class="page-header"><h2>Validations en attente</h2></div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head"><h3>Annonces</h3></div>
+          <div id="val-annonces"><div class="placeholder">Chargement...</div></div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head"><h3>Evenements</h3></div>
+          <div id="val-events"><div class="placeholder">Chargement...</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Comptes</h3></div>
+          <div id="val-users"><div class="placeholder">Chargement...</div></div>
+        </div>
+      </div>
+
+      <!-- CONTENEURS -->
+      <div class="screen" id="screen-conteneurs">
+        <div class="page-header">
+          <h2>Conteneurs</h2>
+          <button class="btn btn-dark" onclick="toast('Bientot disponible')">+ Ajouter</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Localisation</th><th>Etat</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="4" style="text-align:center;color:#aaa">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card" style="margin-top:16px">
+      <div class="card-head"><h3>Demandes de dépôt</h3></div>
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Utilisateur</th><th>Conteneur</th><th>Statut</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="depot-tbody">
+              <tr><td colspan="5" style="text-align:center;color:#aaa">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FINANCES -->
+      <div class="screen" id="screen-finances">
+        <div class="page-header"><h2>Revenus</h2></div>
+        <div class="card">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Client</th><th>Montant</th><th>Commission</th><th>Date</th></tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="5" style="text-align:center;color:#aaa">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+
+<div class="modal-bg" id="modal-user" onclick="closeModal('modal-user', event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Utilisateur</h3>
+      <button onclick="closeModal('modal-user', null)">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="row2">
+        <div class="field"><label>Prenom</label><input id="user-prenom" type="text" placeholder="Prenom"></div>
+        <div class="field"><label>Nom</label><input id="user-nom" type="text" placeholder="Nom"></div>
+      </div>
+      <div class="field"><label>Email</label><input id="user-email" type="email" placeholder="email@exemple.fr"></div>
+      <div class="field"><label>Mot de passe</label><input id="user-mdp" type="password" placeholder="••••••••"></div>
+      <div class="field"><label>Role</label>
+        <select id="user-role">
+          <option>Particulier</option>
+          <option>Pro</option>
+          <option>Salarie</option>
+          <option>Admin</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('modal-user', null)">Annuler</button>
+      <button id="user-save-btn" class="btn btn-dark" onclick="createUser()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-cat" onclick="closeModal('modal-cat', event)">
+  <div class="modal" style="width:360px">
+    <div class="modal-head">
+      <h3>Categorie</h3>
+      <button onclick="closeModal('modal-cat', null)">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Libelle</label><input id="cat-libelle" type="text" placeholder="Ex: Mobilier"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('modal-cat', null)">Annuler</button>
+      <button class="btn btn-dark" onclick="createCategorie()">Creer</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="admin.js"></script>
+
+</body>
+</html>
