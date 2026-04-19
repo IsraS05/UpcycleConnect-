@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UpcycleConnect</title>
+  <link rel="stylesheet" href="particulier.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-page" class="login-wrap">
+  <div class="login-box">
+    <h2>UpcycleConnect</h2>
+    <p class="sub">La plateforme de l'upcycling</p>
+
+    <div class="login-tabs">
+      <div class="login-tab active" onclick="switchTab('connexion')">Connexion</div>
+      <div class="login-tab" onclick="switchTab('inscription')">Inscription</div>
+    </div>
+
+    <!-- Connexion -->
+    <div id="tab-connexion">
+      <div class="field"><label>Email</label><input id="login-email" type="email" placeholder="email@exemple.fr"></div>
+      <div class="field"><label>Mot de passe</label><input id="login-mdp" type="password" placeholder="••••••••"></div>
+      <button class="btn btn-dark" style="width:100%;margin-top:8px" onclick="login()">Se connecter</button>
+    </div>
+
+    <!-- Inscription -->
+    <div id="tab-inscription" style="display:none">
+      <div class="row2">
+        <div class="field"><label>Prenom</label><input id="reg-prenom" type="text" placeholder="Prenom"></div>
+        <div class="field"><label>Nom</label><input id="reg-nom" type="text" placeholder="Nom"></div>
+      </div>
+      <div class="field"><label>Email</label><input id="reg-email" type="email" placeholder="email@exemple.fr"></div>
+      <div class="field"><label>Mot de passe</label><input id="reg-mdp" type="password" placeholder="••••••••"></div>
+      <button class="btn btn-dark" style="width:100%;margin-top:8px" onclick="register()">S'inscrire</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-page" class="layout" style="display:none">
+
+  <aside class="sidebar">
+    <div class="logo">
+      UpcycleConnect
+      <span>Espace particulier</span>
+    </div>
+    <nav>
+      <div class="label">Mon espace</div>
+      <a class="active" onclick="go('dashboard', this)">Dashboard</a>
+      <a onclick="go('annonces', this)">Mes annonces</a>
+      <a onclick="go('conteneur', this)">Depot conteneur</a>
+      <a onclick="go('score', this)">Upcycling Score</a>
+
+      <div class="label">Catalogue</div>
+      <a onclick="go('catalogue', this)">Formations & Evenements</a>
+      <a onclick="go('planning', this)">Mon planning</a>
+    </nav>
+    <div class="sidebar-user">
+      <strong id="user-name">—</strong>
+      <span id="user-role">Particulier</span>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h1 id="page-title">Dashboard</h1>
+      <button class="btn" onclick="logout()">Deconnexion</button>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="screen active" id="screen-dashboard">
+        <div class="grid3" style="margin-bottom:16px">
+          <div class="kpi"><div class="num" id="dash-annonces">0</div><div class="lbl">Mes annonces</div></div>
+          <div class="kpi"><div class="num" id="dash-score">0</div><div class="lbl">Upcycling Score</div></div>
+          <div class="kpi"><div class="num" id="dash-events">0</div><div class="lbl">Formations dispo</div></div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head"><h3>Mes dernieres annonces</h3></div>
+            <div class="card-body" id="dash-mes-annonces">
+              <div class="placeholder">Chargement...</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Prochains evenements</h3></div>
+            <div class="card-body" id="dash-events-list">
+              <div class="placeholder">Chargement...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MES ANNONCES -->
+      <div class="screen" id="screen-annonces">
+        <div class="page-header">
+          <h2>Mes annonces</h2>
+          <button class="btn btn-dark" onclick="openModal('modal-annonce')">+ Nouvelle annonce</button>
+        </div>
+        <div id="liste-annonces">
+          <div class="placeholder">Chargement...</div>
+        </div>
+      </div>
+
+      <!-- DEPOT CONTENEUR -->
+      <div class="screen" id="screen-conteneur">
+        <div class="page-header"><h2>Depot en conteneur</h2></div>
+        <div class="card">
+          <div class="card-head"><h3>Faire une demande de depot</h3></div>
+          <div class="card-body">
+            <p style="font-size:13px;color:#555;margin-bottom:16px">
+              Remplissez ce formulaire pour demander a deposer un objet dans un de nos conteneurs.
+              Apres validation, vous recevrez un code d'ouverture.
+            </p>
+            <div class="field"><label>Titre de l'objet</label><input id="depot-titre" type="text" placeholder="Ex: Chaise en bois"></div>
+            <div class="field"><label>Description</label><textarea id="depot-desc" placeholder="Decrivez l'objet..."></textarea></div>
+            <div class="row2">
+              <div class="field"><label>Categorie</label>
+                <select id="depot-categorie">
+                  <option>Mobilier</option>
+                  <option>Textile</option>
+                  <option>Electronique</option>
+                  <option>Outillage</option>
+                </select>
+              </div>
+              <div class="field"><label>Conteneur</label>
+                <select id="depot-conteneur">
+                  <option>Chargement...</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-dark" onclick="demandeDepot()">Soumettre la demande</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+    <div class="card-head"><h3>Mes demandes</h3></div>
+    <div class="card-body" id="mes-depots">
+        <div class="placeholder">Chargement...</div>
+    </div>
+</div>
+      </div>
+
+      <!-- UPCYCLING SCORE -->
+      <div class="screen" id="screen-score">
+        <div class="page-header"><h2>Mon Upcycling Score</h2></div>
+        <div class="grid2">
+          <div class="score-box">
+            <div class="num" id="score-val">0</div>
+            <div class="lbl">UPCYCLING SCORE</div>
+            <div class="stats">
+              <div>
+                <div class="stat-val" id="score-kg">0</div>
+                <div class="stat-key">kg evites</div>
+              </div>
+              <div>
+                <div class="stat-val" id="score-objets">0</div>
+                <div class="stat-key">objets deposes</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Comment ameliorer mon score ?</h3></div>
+            <div class="card-body" style="font-size:13px;color:#555;line-height:1.8">
+              <p>Deposer un objet dans un conteneur +50 pts</p>
+              <p>Faire valider une annonce +20 pts</p>
+              <p>S'inscrire a une formation +10 pts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATALOGUE -->
+      <div class="screen" id="screen-catalogue">
+        <div class="page-header"><h2>Formations & Evenements</h2></div>
+        <div id="liste-evenements" class="grid2">
+          <div class="placeholder">Chargement...</div>
+        </div>
+      </div>
+
+      <!-- PLANNING -->
+      <div class="screen" id="screen-planning">
+        <div class="page-header"><h2>Mon planning</h2></div>
+        <div class="card">
+          <div class="card-head"><h3>Mes inscriptions</h3></div>
+          <div class="card-body" id="liste-planning">
+            <div class="placeholder">Aucune inscription pour le moment</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+
+<div class="modal-bg" id="modal-annonce" onclick="closeModal('modal-annonce', event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Nouvelle annonce</h3>
+      <button onclick="closeModal('modal-annonce', null)">x</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Titre</label><input id="ann-titre" type="text" placeholder="Ex: Chaise en bois massif"></div>
+      <div class="field"><label>Description</label><textarea id="ann-desc" placeholder="Decrivez l'objet..."></textarea></div>
+      <div class="row2">
+        <div class="field"><label>Type</label>
+          <select id="ann-type">
+            <option>Don</option>
+            <option>Vente</option>
+            <option>Service</option>
+          </select>
+        </div>
+        <div class="field"><label>Prix (0 si don)</label><input id="ann-prix" type="number" placeholder="0" value="0"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Ville</label><input id="ann-ville" type="text" placeholder="Paris"></div>
+        <div class="field"><label>Code postal</label><input id="ann-cp" type="text" placeholder="75010"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('modal-annonce', null)">Annuler</button>
+      <button class="btn btn-dark" onclick="createAnnonce()">Publier</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="particulier.js"></script>
+</body>
+</html>
