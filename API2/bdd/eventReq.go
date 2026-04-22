@@ -22,7 +22,8 @@ func GetEvenements() ([]models.Evenement, error) {
 
 	for rows.Next() {
 		var e models.Evenement
-		err := rows.Scan(&e.Id, &e.Titre, &e.Description, &e.DateDebut, &e.DateFin, &e.NbPlaces, &e.StatutValidation, &e.Format, &e.NomSalarie, &e.PrenomSalarie)
+		err := rows.Scan(&e.Id, &e.Titre, &e.Description, &e.DateDebut, &e.DateFin,
+			&e.NbPlaces, &e.StatutValidation, &e.Format, &e.NomSalarie, &e.PrenomSalarie)
 		if err != nil {
 			return nil, fmt.Errorf("GetEvenements scan : %v", err)
 		}
@@ -61,6 +62,21 @@ func RefuseEvenement(id int) error {
 	result, err := Db.Exec("UPDATE pa2026.evenement SET statut_validation = 'Refuse' WHERE id_event = ?", id)
 	if err != nil {
 		return fmt.Errorf("RefuseEvenement : %v", err)
+	}
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return fmt.Errorf("aucun événement trouvé avec l'id %d", id)
+	}
+	return nil
+}
+
+func DeleteEvenement(id int) error {
+	result, err := Db.Exec("DELETE FROM pa2026.evenement WHERE id_event = ?", id)
+	if err != nil {
+		return fmt.Errorf("DeleteEvenement : %v", err)
 	}
 	rows, err := result.RowsAffected()
 	if err != nil {
