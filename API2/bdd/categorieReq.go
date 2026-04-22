@@ -42,6 +42,24 @@ func CreateCategorie(c models.Categorie) error {
 	return nil
 }
 
+func UpdateCategorie(c models.Categorie) error {
+	result, err := Db.Exec(
+		"UPDATE pa2026.categorie SET libelle = ? WHERE id_categorie = ?",
+		c.Libelle, c.Id,
+	)
+	if err != nil {
+		return fmt.Errorf("UpdateCategorie : %v", err)
+	}
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return fmt.Errorf("aucune catégorie trouvée avec l'id %d", c.Id)
+	}
+	return nil
+}
+
 func DeleteCategorie(id int) error {
 	result, err := Db.Exec("DELETE FROM pa2026.categorie WHERE id_categorie = ?", id)
 	if err != nil {

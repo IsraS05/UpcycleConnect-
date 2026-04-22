@@ -54,12 +54,27 @@ func UpdateConteneur(c models.BoxConteneur) error {
 	return nil
 }
 
+func DeleteConteneur(id int) error {
+	result, err := Db.Exec("DELETE FROM pa2026.box_conteneur WHERE id_box = ?", id)
+	if err != nil {
+		return fmt.Errorf("DeleteConteneur : %v", err)
+	}
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows == 0 {
+		return fmt.Errorf("aucun conteneur trouvé avec l'id %d", id)
+	}
+	return nil
+}
+
 func GetDepots() ([]models.DepotBox, error) {
 	var depots []models.DepotBox
 
 	rows, err := Db.Query(`
 		SELECT d.id_depot, d.code_ouverture, d.code_barres_pro, d.id_box,
-		       u.nom, u.prenom
+		       d.id_user, u.nom, u.prenom
 		FROM pa2026.depot_box d
 		INNER JOIN pa2026.utilisateur u ON u.id_user = d.id_user
 	`)
@@ -70,7 +85,8 @@ func GetDepots() ([]models.DepotBox, error) {
 
 	for rows.Next() {
 		var d models.DepotBox
-		err := rows.Scan(&d.Id, &d.CodeOuverture, &d.CodeBarresPro, &d.IdBox, &d.NomParticulier, &d.PrenomParticulier)
+		err := rows.Scan(&d.Id, &d.CodeOuverture, &d.CodeBarresPro, &d.IdBox,
+			&d.IdUser, &d.NomParticulier, &d.PrenomParticulier)
 		if err != nil {
 			return nil, fmt.Errorf("GetDepots scan : %v", err)
 		}
