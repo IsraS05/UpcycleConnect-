@@ -5,7 +5,7 @@ import (
 	"upcycleconnect/models"
 )
 
-// Créer une annonce
+// creer annonce
 func CreateAnnonce(a models.Annonce) error {
 	_, err := Db.Exec(
 		`INSERT INTO pa2026.annonce (titre, description, type, prix, statut_validation, code_postal, ville, projet_potentiel, id_user, id_categorie)
@@ -18,7 +18,7 @@ func CreateAnnonce(a models.Annonce) error {
 	return nil
 }
 
-// Créer un dépôt en conteneur → table depot_box
+// creer dépôt en conteneur dans table depot_box
 func CreateDepot(d models.DepotBox) error {
 	_, err := Db.Exec(
 		`INSERT INTO pa2026.depot_box (code_ouverture, code_barres_pro, statut, id_user, id_box)
@@ -32,32 +32,32 @@ func CreateDepot(d models.DepotBox) error {
 }
 
 func GetDepotsByUser(idUser int) ([]models.DepotBox, error) {
-    var depots []models.DepotBox
+	var depots []models.DepotBox
 
-    rows, err := Db.Query(`
+	rows, err := Db.Query(`
         SELECT d.id_depot, d.code_ouverture, d.code_barres_pro, d.id_box,
                u.nom, u.prenom
         FROM pa2026.depot_box d
         INNER JOIN pa2026.utilisateur u ON u.id_user = d.id_user
         WHERE d.id_user = ?
     `, idUser)
-    if err != nil {
-        return nil, fmt.Errorf("GetDepotsByUser : %v", err)
-    }
-    defer rows.Close()
+	if err != nil {
+		return nil, fmt.Errorf("GetDepotsByUser : %v", err)
+	}
+	defer rows.Close()
 
-    for rows.Next() {
-        var d models.DepotBox
-        err := rows.Scan(&d.Id, &d.CodeOuverture, &d.CodeBarresPro, &d.IdBox, &d.NomParticulier, &d.PrenomParticulier)
-        if err != nil {
-            return nil, fmt.Errorf("GetDepotsByUser scan : %v", err)
-        }
-        depots = append(depots, d)
-    }
-    return depots, rows.Err()
+	for rows.Next() {
+		var d models.DepotBox
+		err := rows.Scan(&d.Id, &d.CodeOuverture, &d.CodeBarresPro, &d.IdBox, &d.NomParticulier, &d.PrenomParticulier)
+		if err != nil {
+			return nil, fmt.Errorf("GetDepotsByUser scan : %v", err)
+		}
+		depots = append(depots, d)
+	}
+	return depots, rows.Err()
 }
 
-// Inscription à un événement → table inscription
+// Inscription à un evenement dans la table
 func CreateInscription(idUser int, idEvent int) error {
 	// Vérifier si déjà inscrit
 	var count int
@@ -82,7 +82,7 @@ func CreateInscription(idUser int, idEvent int) error {
 	return nil
 }
 
-// Récupérer les inscriptions d'un user
+// Recup inscriptions d'un user
 func GetInscriptions(idUser int) ([]models.Evenement, error) {
 	var events []models.Evenement
 

@@ -11,7 +11,7 @@ const titles = {
   planning:  'Mon planning',
 }
 
-// ── SESSION ──
+//SESSION
 function saveSession(user) {
   localStorage.setItem('uc_user', JSON.stringify(user))
 }
@@ -24,7 +24,7 @@ function loadSession() {
   }
 }
 
-// ── LOGIN ──
+//LOGIN
 function switchTab(tab) {
   document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'))
   document.getElementById('tab-connexion').style.display   = tab === 'connexion' ? '' : 'none'
@@ -127,7 +127,7 @@ function showApp() {
   loadDashboard()
 }
 
-// ── NAVIGATION ──
+// NAVIGATION 
 function go(page, el) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
   document.getElementById('screen-' + page).classList.add('active')
@@ -146,7 +146,7 @@ function go(page, el) {
   if (page === 'planning')  loadPlanning()
 }
 
-// ── DASHBOARD ──
+// DASHBOARD 
 async function loadDashboard() {
   try {
     const [annonces, evenements] = await Promise.all([
@@ -191,7 +191,7 @@ async function loadDashboard() {
   }
 }
 
-// ── MES ANNONCES ──
+//MES ANNONCES 
 async function loadMesAnnonces() {
   try {
     const annonces = await fetch(`${API}/admin/annonces`).then(r => r.json())
@@ -247,7 +247,7 @@ async function createAnnonce() {
   }
 }
 
-// ── EVENEMENTS ──
+//EVENEMENTS
 async function loadEvenements() {
   try {
     const events = await fetch(`${API}/admin/evenements`).then(r => r.json())
@@ -286,7 +286,7 @@ async function inscrire(idEvent) {
   }
 }
 
-// ── PLANNING ──
+//PLANNING 
 async function loadPlanning() {
   try {
     const events = await fetch(`${API}/particulier/planning/${currentUser.id_user}`).then(r => r.json())
@@ -310,7 +310,7 @@ async function loadPlanning() {
   }
 }
 
-// ── CONTENEURS ──
+//CONTENEURS 
 async function loadConteneurs() {
   try {
     const conteneurs = await fetch(`${API}/admin/conteneurs`).then(r => r.json())
@@ -371,7 +371,7 @@ async function demandeDepot() {
   }
 }
 
-// ── SCORE ──
+//SCORE 
 async function loadScore() {
   try {
     const annonces = await fetch(`${API}/admin/annonces`).then(r => r.json())
@@ -386,7 +386,7 @@ async function loadScore() {
   }
 }
 
-// ── HELPERS ──
+//HELPERS 
 function openModal(id)  { document.getElementById(id).classList.add('open') }
 function closeModal(id, e) {
   if (!e || e.target.id === id) document.getElementById(id).classList.remove('open')
@@ -399,5 +399,5 @@ function toast(msg) {
   setTimeout(() => t.style.display = 'none', 2500)
 }
 
-// ── INIT ── charger la session au démarrage
+//charger la session au démarrage
 window.addEventListener('load', loadSession)

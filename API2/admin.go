@@ -99,7 +99,7 @@ func main() {
 	http.HandleFunc("DELETE /admin/plans/delete/{id}", admin.DeletePlan)
 	http.HandleFunc("OPTIONS /admin/plans/delete/{id}", admin.DeletePlan)
 
-	// ── PARTICULIER ──
+	//PARTICULIER
 	http.HandleFunc("POST /particulier/annonces/add", admin.CreateAnnonceParticulier)
 	http.HandleFunc("OPTIONS /particulier/annonces/add", admin.CreateAnnonceParticulier)
 	http.HandleFunc("POST /particulier/depot", admin.CreateDepotParticulier)
