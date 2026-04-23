@@ -64,7 +64,7 @@ func UpdatePlan(p models.PlanAbo) error {
 }
 
 func DeletePlan(id int) error {
-	// Vérifier si des abonnements actifs utilisent ce plan
+	// verifier si abonnements actifs qui utilise ce plan
 	var count int
 	err := Db.QueryRow(
 		"SELECT COUNT(*) FROM pa2026.abonnement WHERE id_plan = ? AND statut = 'Actif'", id,

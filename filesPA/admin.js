@@ -15,7 +15,7 @@ const titles = {
 
 let _abonnementsCache = []
 
-// ── NAVIGATION ──
+//NAVIGATION
 function go(page, el) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
   document.getElementById('screen-' + page).classList.add('active')
@@ -36,7 +36,7 @@ function go(page, el) {
   if (page === 'plans')        loadPlans()
 }
 
-// ── DASHBOARD ──
+//DASHBOARD
 async function loadDashboard() {
   try {
     const [users, annonces, evenements, abonnements, stats] = await Promise.all([
@@ -47,7 +47,7 @@ async function loadDashboard() {
       fetch(`${API}/admin/stats`).then(r => r.json()),
     ])
 
-    // KPIs
+
     document.getElementById('kpi-users').textContent       = users      ? users.length      : 0
     document.getElementById('kpi-annonces').textContent    = annonces   ? annonces.length   : 0
     document.getElementById('kpi-events').textContent      = evenements ? evenements.length : 0
@@ -112,7 +112,7 @@ function renderAbonnementsWidget(abonnements) {
 function validateItem(type, id) { if (type === 'annonce') validateAnnonce(id); else validateEvenement(id) }
 function refuseItem(type, id)   { if (type === 'annonce') refuseAnnonce(id);   else refuseEvenement(id) }
 
-// ── UTILISATEURS ──
+//UTILISATEURS
 async function loadUsers() {
   try {
     const users = await fetch(`${API}/admin/users`).then(r => r.json())
@@ -172,7 +172,7 @@ async function updateUser(id) {
   } catch (e) { toast('Erreur serveur') }
 }
 
-// ── CATEGORIES ──
+//CATEGORIES
 async function loadCategories() {
   try {
     const cats = await fetch(`${API}/admin/categories`).then(r => r.json())
@@ -232,7 +232,7 @@ async function deleteCategorie(id) {
   toast('Catégorie supprimée'); loadCategories()
 }
 
-// ── ANNONCES ──
+//ANNONCES
 async function loadAnnonces() {
   try {
     const annonces = await fetch(`${API}/admin/annonces`).then(r => r.json())
@@ -268,7 +268,7 @@ async function deleteAnnonce(id) {
   toast('Annonce supprimée'); loadAnnonces()
 }
 
-// ── EVENEMENTS ──
+// EVENEMENTS
 async function loadEvenements() {
   try {
     const events = await fetch(`${API}/admin/evenements`).then(r => r.json())
@@ -305,7 +305,7 @@ async function deleteEvenement(id) {
   toast('Evenement supprimé'); loadEvenements()
 }
 
-// ── VALIDATIONS ──
+//VALIDATIONS
 async function loadValidations() {
   try {
     const [annonces, events, users] = await Promise.all([
@@ -361,7 +361,7 @@ function renderValidationsUsers(items) {
   `).join('') : '<div class="placeholder">Aucun compte en attente</div>'
 }
 
-// ── CONTENEURS ──
+//CONTENEURS
 async function loadConteneurs() {
   try {
     const conteneurs = await fetch(`${API}/admin/conteneurs`).then(r => r.json())
@@ -422,7 +422,7 @@ async function deleteConteneur(id) {
   toast('Conteneur supprimé'); loadConteneurs()
 }
 
-// ── COMMANDES ──
+//COMMANDES 
 async function loadCommandes() {
   try {
     const commandes = await fetch(`${API}/admin/commandes`).then(r => r.json())
@@ -443,7 +443,7 @@ function renderCommandes(commandes) {
   `).join('')
 }
 
-// ── ABONNEMENTS ──
+// ABONNEMENTS 
 async function loadAbonnements() {
   try {
     const abonnements = await fetch(`${API}/admin/abonnements`).then(r => r.json())
@@ -510,7 +510,7 @@ async function deleteAbonnement(id) {
   toast('Abonnement supprimé'); loadAbonnements()
 }
 
-// ── PLANS D'ABONNEMENT ──
+//PLANS D'ABONNEMENT
 let _plansCache = []
 
 async function loadPlans() {
@@ -613,7 +613,7 @@ function resetPlanModal() {
   btn.onclick = createPlan
 }
 
-// ── HELPERS ──
+// HELPERS
 function openModal(id)  { document.getElementById(id).classList.add('open') }
 function closeModal(id, e) { if (!e || e.target.id === id) document.getElementById(id).classList.remove('open') }
 function filterTab(el) {
