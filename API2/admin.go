@@ -8,18 +8,20 @@ import (
 )
 
 func Health(w http.ResponseWriter, r *http.Request) {
-	err := bdd.Db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Fprintln(w, "ping à la bdd")
+	if err := bdd.Db.Ping(); err != nil { panic(err) }
+	fmt.Fprintln(w, "ok")
 }
 
 func main() {
 	bdd.Db = bdd.NewDB()
 	http.HandleFunc("GET /{$}", Health)
 
-	// Login
+	// Swagger
+	http.HandleFunc("GET /swagger", serveSwagger)
+	http.HandleFunc("GET /swagger/", serveSwagger)
+	http.HandleFunc("GET /swagger/openapi.yaml", serveOpenAPI)
+
+	// Auth
 	http.HandleFunc("POST /login", admin.Login)
 	http.HandleFunc("OPTIONS /login", admin.Login)
 
@@ -69,20 +71,32 @@ func main() {
 	http.HandleFunc("PUT /admin/depots/validate/{id}", admin.ValidateDepot)
 	http.HandleFunc("OPTIONS /admin/depots/validate/{id}", admin.ValidateDepot)
 
-	// Commandes et Abonnements
+	// Commandes
 	http.HandleFunc("GET /admin/commandes", admin.GetAllCommandes)
 	http.HandleFunc("GET /admin/abonnements", admin.GetAllAbonnements)
 
-	// ── PARTICULIER ──
+	// Articles
+	http.HandleFunc("GET /admin/articles", admin.GetArticlesHandler)
+
+	// Particulier
 	http.HandleFunc("POST /particulier/annonces/add", admin.CreateAnnonceParticulier)
 	http.HandleFunc("OPTIONS /particulier/annonces/add", admin.CreateAnnonceParticulier)
+	http.HandleFunc("PUT /particulier/annonces/modify/{id}", admin.UpdateAnnonceParticulier)
+	http.HandleFunc("OPTIONS /particulier/annonces/modify/{id}", admin.UpdateAnnonceParticulier)
+	http.HandleFunc("DELETE /particulier/annonces/delete/{id}", admin.DeleteAnnonceParticulier)
+	http.HandleFunc("OPTIONS /particulier/annonces/delete/{id}", admin.DeleteAnnonceParticulier)
 	http.HandleFunc("POST /particulier/depot", admin.CreateDepotParticulier)
 	http.HandleFunc("OPTIONS /particulier/depot", admin.CreateDepotParticulier)
+	http.HandleFunc("GET /particulier/depots/{idUser}", admin.GetDepotsUser)
 	http.HandleFunc("POST /particulier/inscription/{idEvent}", admin.CreateInscription)
 	http.HandleFunc("OPTIONS /particulier/inscription/{idEvent}", admin.CreateInscription)
+	http.HandleFunc("DELETE /particulier/inscription/{idEvent}/{idUser}", admin.DeleteInscriptionHandler)
+	http.HandleFunc("OPTIONS /particulier/inscription/{idEvent}/{idUser}", admin.DeleteInscriptionHandler)
 	http.HandleFunc("GET /particulier/planning/{idUser}", admin.GetPlanning)
-	http.HandleFunc("GET /particulier/depots/{idUser}", admin.GetDepotsUser)
+	http.HandleFunc("PUT /particulier/password/{idUser}", admin.ChangePasswordHandler)
+	http.HandleFunc("OPTIONS /particulier/password/{idUser}", admin.ChangePasswordHandler)
 
 	fmt.Println("Serveur lancé sur : http://localhost:8081")
+	fmt.Println("Swagger UI      : http://localhost:8081/swagger")
 	http.ListenAndServe(":8081", nil)
 }
