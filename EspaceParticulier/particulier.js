@@ -13,9 +13,6 @@ const titles = {
   forum:     'Forum',
 }
 
-// ── MULTILINGUE (i18n) ──
-// Les traductions viennent de la table dictionnaire via l'API.
-// Ajouter une langue = insérer des lignes en base (aucun code à modifier).
 let I18N = {}
 function tr(key, fallback) { return I18N[key] || fallback || key }
 
@@ -36,7 +33,6 @@ function applyI18n() {
     const k = el.dataset.i18nPh
     if (I18N[k]) el.setAttribute('placeholder', I18N[k])
   })
-  // titre de la barre du haut selon la page active
   const active = document.querySelector('.screen.active')
   if (active) {
     const page = active.id.replace('screen-', '')
@@ -44,13 +40,11 @@ function applyI18n() {
   }
   const sel = document.getElementById('lang-select')
   if (sel) sel.value = localStorage.getItem('uc_lang') || 'fr'
-  // si on est sur le planning, redessiner le calendrier dans la bonne langue
   if (document.getElementById('screen-planning')?.classList.contains('active') && document.getElementById('calendar')) {
     renderCalendar()
   }
 }
 
-// TUTORIEL FIRSTLOGIN
 const tutoSteps = [
   { titre: 'Bienvenue sur UpcycleConnect 👋', texte: 'Voici un petit tour de votre espace particulier, ça prend 30 secondes.' },
   { titre: 'Vos annonces', texte: 'Déposez des objets à donner ou à vendre depuis « Mes annonces ». Elles sont validées par notre équipe avant publication.' },
@@ -290,7 +284,6 @@ async function createAnnonce() {
   } catch { toast('Erreur serveur') }
 }
 
-// Ouvre le formulaire de création en le vidant (sinon il garde les valeurs précédentes)
 function newAnnonce() {
   ['ann-titre','ann-desc','ann-ville','ann-cp'].forEach(id => { document.getElementById(id).value = '' })
   document.getElementById('ann-prix').value = '0'
@@ -334,7 +327,7 @@ async function deleteAnnonce(id) {
   } catch { toast('Erreur suppression') }
 }
 
-// evenements
+// EVENTS
 async function loadEvenements() {
   try {
     const [events, inscriptions] = await Promise.all([
@@ -350,16 +343,24 @@ async function loadEvenements() {
     const q = (document.getElementById('ev-search')?.value || '').toLowerCase()
     if (q) valides = valides.filter(e => (e.titre || '').toLowerCase().includes(q))
     document.getElementById('liste-evenements').innerHTML =
-      valides.length ? valides.map(e => `
+      valides.length ? valides.map(e => {
+        const restantes = (e.nb_places || 0) - (e.nb_inscrits || 0)
+        let btn
+        if (inscrits.has(e.id_event)) {
+          btn = `<button class="btn btn-sm" disabled>${tr('btn.inscrit', '✓ Inscrit')}</button>`
+        } else if (restantes <= 0) {
+          btn = `<button class="btn btn-sm" disabled>${tr('btn.complet', 'Complet')}</button>`
+        } else {
+          btn = `<button class="btn btn-dark btn-sm" onclick="inscrire(${e.id_event}, this)">${tr('btn.sinscrire', "S'inscrire")}</button>`
+        }
+        return `
         <div class="event-card">
           <h4>${e.titre}</h4>
-          <div class="meta">${new Date(e.date_debut).toLocaleDateString('fr-FR')} · ${e.format} · ${e.nb_places} places</div>
+          <div class="meta">${new Date(e.date_debut).toLocaleDateString('fr-FR')} · ${e.format} · ${Math.max(restantes, 0)}/${e.nb_places} places</div>
           <p style="font-size:12px;color:#666;margin:6px 0">${e.description || ''}</p>
-          ${inscrits.has(e.id_event)
-            ? `<button class="btn btn-sm" disabled>${tr('btn.inscrit', '✓ Inscrit')}</button>`
-            : `<button class="btn btn-dark btn-sm" onclick="inscrire(${e.id_event}, this)">${tr('btn.sinscrire', "S'inscrire")}</button>`}
-        </div>
-      `).join('') : '<div class="placeholder">Aucun événement disponible</div>'
+          ${btn}
+        </div>`
+      }).join('') : '<div class="placeholder">Aucun événement disponible</div>'
   } catch { toast('Erreur chargement événements') }
 }
 
@@ -369,7 +370,7 @@ async function inscrire(idEvent, btn) {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id_user: currentUser.id_user })
     })
-    if (res.ok) { toast('Inscription enregistrée !'); btn.textContent = tr('btn.inscrit', '✓ Inscrit'); btn.disabled = true; btn.classList.remove('btn-dark') }
+    if (res.ok) { toast('Inscription enregistrée !'); loadEvenements() }
     else toast(await res.text())
   } catch { toast('Erreur inscription') }
 }
@@ -402,7 +403,6 @@ function renderCalendar() {
     : ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
   const offset = (new Date(y, m, 1).getDay() + 6) % 7   // lundi = 0
   const nbDays = new Date(y, m + 1, 0).getDate()
-  // événements de ce mois regroupés par jour
   const byDay = {}
   ;(planningCache || []).forEach(e => {
     const d = new Date(e.date_debut)
@@ -529,7 +529,6 @@ async function loadScore() {
     const lvlEl = document.getElementById('score-level')
     if (lvlEl) { lvlEl.textContent = level.label; lvlEl.style.color = level.color }
 
-    // Détail contributions
     const det = document.getElementById('score-detail')
     if (det) det.innerHTML = `
       <div class="planning-item"><div class="planning-info"><div class="name">Annonces validées</div><div class="sub">+20 pts chacune</div></div><span class="badge badge-ok">${valides.length} × 20 = ${valides.length*20} pts</span></div>
@@ -702,7 +701,6 @@ async function deleteAccount() {
   } catch { toast('Erreur suppression') }
 }
 
-// HELPERS
 function planningItem(e) {
   return `<div class="planning-item">
     ${planningDate(e.date_debut)}
