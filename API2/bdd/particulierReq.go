@@ -32,29 +32,29 @@ func CreateDepot(d models.DepotBox) error {
 }
 
 func GetDepotsByUser(idUser int) ([]models.DepotBox, error) {
-    var depots []models.DepotBox
+	var depots []models.DepotBox
 
-    rows, err := Db.Query(`
-        SELECT d.id_depot, d.code_ouverture, d.code_barres_pro, d.id_box,
+	rows, err := Db.Query(`
+        SELECT d.id_depot, d.code_ouverture, d.code_barres_pro, d.statut, d.id_box,
                u.nom, u.prenom
         FROM pa2026.depot_box d
         INNER JOIN pa2026.utilisateur u ON u.id_user = d.id_user
         WHERE d.id_user = ?
     `, idUser)
-    if err != nil {
-        return nil, fmt.Errorf("GetDepotsByUser : %v", err)
-    }
-    defer rows.Close()
+	if err != nil {
+		return nil, fmt.Errorf("GetDepotsByUser : %v", err)
+	}
+	defer rows.Close()
 
-    for rows.Next() {
-        var d models.DepotBox
-        err := rows.Scan(&d.Id, &d.CodeOuverture, &d.CodeBarresPro, &d.IdBox, &d.NomParticulier, &d.PrenomParticulier)
-        if err != nil {
-            return nil, fmt.Errorf("GetDepotsByUser scan : %v", err)
-        }
-        depots = append(depots, d)
-    }
-    return depots, rows.Err()
+	for rows.Next() {
+		var d models.DepotBox
+		err := rows.Scan(&d.Id, &d.CodeOuverture, &d.CodeBarresPro, &d.Statut, &d.IdBox, &d.NomParticulier, &d.PrenomParticulier)
+		if err != nil {
+			return nil, fmt.Errorf("GetDepotsByUser scan : %v", err)
+		}
+		depots = append(depots, d)
+	}
+	return depots, rows.Err()
 }
 
 // Inscription à un événement → table inscription

@@ -96,6 +96,19 @@ func main() {
 	http.HandleFunc("PUT /particulier/password/{idUser}", admin.ChangePasswordHandler)
 	http.HandleFunc("OPTIONS /particulier/password/{idUser}", admin.ChangePasswordHandler)
 
+	// Tutoriel + multilingue
+	http.HandleFunc("PUT /particulier/tutoriel/{idUser}", admin.MarkTutorielHandler)
+	http.HandleFunc("OPTIONS /particulier/tutoriel/{idUser}", admin.MarkTutorielHandler)
+	http.HandleFunc("GET /dictionnaire/{langue}", admin.GetDictionnaireHandler)
+
+	// Forum
+	http.HandleFunc("GET /forum/topics", admin.GetTopicsHandler)
+	http.HandleFunc("POST /forum/topics", admin.CreateTopicHandler)
+	http.HandleFunc("OPTIONS /forum/topics", admin.CreateTopicHandler)
+	http.HandleFunc("GET /forum/topics/{idTopic}/messages", admin.GetMessagesHandler)
+	http.HandleFunc("POST /forum/topics/{idTopic}/messages", admin.CreateMessageHandler)
+	http.HandleFunc("OPTIONS /forum/topics/{idTopic}/messages", admin.CreateMessageHandler)
+
 	fmt.Println("Serveur lancé sur : http://localhost:8081")
 	fmt.Println("Swagger UI      : http://localhost:8081/swagger")
 	http.ListenAndServe(":8081", nil)

@@ -5,27 +5,28 @@ import (
 	"fmt"
 	"strings"
 	"upcycleconnect/models"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
 func Login(email string, mdp string) (*models.User, error) {
-    var u models.User
-    err := Db.QueryRow(
-        "SELECT id_user, role, nom, prenom, email, mot_de_passe, tutoriel_vu, type_statut, nom_entreprise, siret FROM pa2026.utilisateur WHERE email = ?",
-        email,
-    ).Scan(&u.Id, &u.Role, &u.Nom, &u.Prenom, &u.Email, &u.MotDePasse, &u.TutorielVu, &u.TypeStatut, &u.NomEntreprise, &u.Siret)
-    if err != nil {
-        return nil, fmt.Errorf("utilisateur non trouvé")
-    }
+	var u models.User
+	err := Db.QueryRow(
+		"SELECT id_user, role, nom, prenom, email, mot_de_passe, tutoriel_vu, type_statut, nom_entreprise, siret FROM pa2026.utilisateur WHERE email = ?",
+		email,
+	).Scan(&u.Id, &u.Role, &u.Nom, &u.Prenom, &u.Email, &u.MotDePasse, &u.TutorielVu, &u.TypeStatut, &u.NomEntreprise, &u.Siret)
+	if err != nil {
+		return nil, fmt.Errorf("utilisateur non trouvé")
+	}
 
-    // Vérifier le mot de passe
-    err = bcrypt.CompareHashAndPassword([]byte(u.MotDePasse), []byte(mdp))
-    if err != nil {
-        return nil, fmt.Errorf("mot de passe incorrect")
-    }
+	// Vérifier le mot de passe
+	err = bcrypt.CompareHashAndPassword([]byte(u.MotDePasse), []byte(mdp))
+	if err != nil {
+		return nil, fmt.Errorf("mot de passe incorrect")
+	}
 
-    u.MotDePasse = "" // ne pas renvoyer le hash
-    return &u, nil
+	u.MotDePasse = "" // ne pas renvoyer le hash
+	return &u, nil
 }
 
 func GetUsers() ([]models.User, error) {
@@ -48,32 +49,30 @@ func GetUsers() ([]models.User, error) {
 	return users, rows.Err()
 }
 
-//import "golang.org/x/crypto/bcrypt"
-
 func CreateUser(u models.User) error {
-    var count int
-    err := Db.QueryRow("SELECT COUNT(*) FROM pa2026.utilisateur WHERE email = ?", u.Email).Scan(&count)
-    if err != nil {
-        return fmt.Errorf("vérification email : %v", err)
-    }
-    if count > 0 {
-        return fmt.Errorf("l'email %s est déjà utilisé", u.Email)
-    }
+	var count int
+	err := Db.QueryRow("SELECT COUNT(*) FROM pa2026.utilisateur WHERE email = ?", u.Email).Scan(&count)
+	if err != nil {
+		return fmt.Errorf("vérification email : %v", err)
+	}
+	if count > 0 {
+		return fmt.Errorf("l'email %s est déjà utilisé", u.Email)
+	}
 
-    // Hash du mot de passe
-    hash, err := bcrypt.GenerateFromPassword([]byte(u.MotDePasse), bcrypt.DefaultCost)
-    if err != nil {
-        return fmt.Errorf("hash mot de passe : %v", err)
-    }
+	// Hash du mot de passe
+	hash, err := bcrypt.GenerateFromPassword([]byte(u.MotDePasse), bcrypt.DefaultCost)
+	if err != nil {
+		return fmt.Errorf("hash mot de passe : %v", err)
+	}
 
-    _, err = Db.Exec(
-        "INSERT INTO pa2026.utilisateur (role, nom, prenom, email, mot_de_passe, tutoriel_vu, type_statut, nom_entreprise, siret) VALUES (?, UPPER(?), UPPER(?), ?, ?, false, ?, ?, ?)",
-        u.Role, u.Nom, u.Prenom, u.Email, string(hash), u.TypeStatut, u.NomEntreprise, u.Siret,
-    )
-    if err != nil {
-        return fmt.Errorf("CreateUser : %v", err)
-    }
-    return nil
+	_, err = Db.Exec(
+		"INSERT INTO pa2026.utilisateur (role, nom, prenom, email, mot_de_passe, tutoriel_vu, type_statut, nom_entreprise, siret) VALUES (?, UPPER(?), UPPER(?), ?, ?, false, ?, ?, ?)",
+		u.Role, u.Nom, u.Prenom, u.Email, string(hash), u.TypeStatut, u.NomEntreprise, u.Siret,
+	)
+	if err != nil {
+		return fmt.Errorf("CreateUser : %v", err)
+	}
+	return nil
 }
 
 func DeleteUser(id int) error {
@@ -92,10 +91,26 @@ func DeleteUser(id int) error {
 }
 
 func UpdateUserById(u models.User) error {
-	result, err := Db.Exec(
-		"UPDATE pa2026.utilisateur SET role = ?, nom = ?, prenom = ?, email = ?, mot_de_passe = ?, type_statut = ?, nom_entreprise = ?, siret = ? WHERE id_user = ?",
-		u.Role, u.Nom, u.Prenom, u.Email, u.MotDePasse, u.TypeStatut, u.NomEntreprise, u.Siret, u.Id,
-	)
+	var result sql.Result
+	var err error
+
+	if u.MotDePasse != "" {
+		// Nouveau mot de passe fourni → on le hash avant de l'enregistrer
+		hash, e := bcrypt.GenerateFromPassword([]byte(u.MotDePasse), bcrypt.DefaultCost)
+		if e != nil {
+			return fmt.Errorf("hash mot de passe : %v", e)
+		}
+		result, err = Db.Exec(
+			"UPDATE pa2026.utilisateur SET role=?, nom=?, prenom=?, email=?, mot_de_passe=?, type_statut=?, nom_entreprise=?, siret=? WHERE id_user=?",
+			u.Role, u.Nom, u.Prenom, u.Email, string(hash), u.TypeStatut, u.NomEntreprise, u.Siret, u.Id,
+		)
+	} else {
+		// Pas de mot de passe → on met à jour les autres champs uniquement
+		result, err = Db.Exec(
+			"UPDATE pa2026.utilisateur SET role=?, nom=?, prenom=?, email=?, type_statut=?, nom_entreprise=?, siret=? WHERE id_user=?",
+			u.Role, u.Nom, u.Prenom, u.Email, u.TypeStatut, u.NomEntreprise, u.Siret, u.Id,
+		)
+	}
 	if err != nil {
 		return fmt.Errorf("UpdateUser : %v", err)
 	}
