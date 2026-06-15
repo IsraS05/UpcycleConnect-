@@ -109,6 +109,34 @@ func main() {
 	http.HandleFunc("GET /particulier/planning/{idUser}", admin.GetPlanning)
 	http.HandleFunc("GET /particulier/depots/{idUser}", admin.GetDepotsUser)
 
+	// --- Conseils & News ---
+	http.HandleFunc("GET /admin/conseils", admin.GetAllConseils)
+	http.HandleFunc("GET /salarie/conseils/{id}", admin.GetConseilsBySalarie)
+	http.HandleFunc("POST /salarie/conseils/add", admin.CreateConseil)
+	http.HandleFunc("OPTIONS /salarie/conseils/add", admin.CreateConseil)
+	http.HandleFunc("PUT /salarie/conseils/modify/{id}", admin.UpdateConseil)
+	http.HandleFunc("OPTIONS /salarie/conseils/modify/{id}", admin.UpdateConseil)
+	http.HandleFunc("PUT /salarie/conseils/publish/{id}", admin.PublishConseil)
+	http.HandleFunc("OPTIONS /salarie/conseils/publish/{id}", admin.PublishConseil)
+	http.HandleFunc("DELETE /salarie/conseils/delete/{id}", admin.DeleteConseil)
+	http.HandleFunc("OPTIONS /salarie/conseils/delete/{id}", admin.DeleteConseil)
+
+	// --- Forums (suivi & modération) ---
+	http.HandleFunc("GET /salarie/forum/sujets", admin.GetAllForumSujets)
+	http.HandleFunc("GET /salarie/forum/sujet/{id}/messages", admin.GetMessagesBySujet)
+	http.HandleFunc("GET /salarie/forum/signalements", admin.GetMessagesSignales)
+	http.HandleFunc("PUT /salarie/forum/message/hide/{id}", admin.HideMessage)
+	http.HandleFunc("OPTIONS /salarie/forum/message/hide/{id}", admin.HideMessage)
+	http.HandleFunc("PUT /salarie/forum/message/dismiss/{id}", admin.DismissSignalement)
+	http.HandleFunc("OPTIONS /salarie/forum/message/dismiss/{id}", admin.DismissSignalement)
+	http.HandleFunc("PUT /salarie/forum/sujet/close/{id}", admin.CloseSujet)
+	http.HandleFunc("OPTIONS /salarie/forum/sujet/close/{id}", admin.CloseSujet)
+
+	// --- Planning & Formations du salarié ---
+	http.HandleFunc("GET /salarie/planning/{id}", admin.GetPlanningSalarie)
+	http.HandleFunc("POST /salarie/formations/add", admin.CreateFormationSalarie)
+	http.HandleFunc("OPTIONS /salarie/formations/add", admin.CreateFormationSalarie)
+
 	fmt.Println("Serveur lancé sur : http://localhost:8081")
 	http.ListenAndServe(":8081", nil)
 }

@@ -40,7 +40,6 @@
 
     <div class="content">
 
-      -- DASHBOARD --
       <div class="screen active" id="screen-dashboard">
         <div class="kpis">
           <div class="kpi"><div class="num" id="kpi-users">—</div><div class="lbl">Utilisateurs</div></div>
@@ -49,7 +48,6 @@
           <div class="kpi"><div class="num" id="kpi-abonnements">—</div><div class="lbl">Abonnements actifs</div></div>
         </div>
 
-        -- Stats financières --
         <div class="card" style="margin-bottom:16px">
           <div class="card-head"><h3>Finances</h3></div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid #eee">
@@ -95,7 +93,6 @@
         </div>
       </div>
 
-      -- UTILISATEURS --
       <div class="screen" id="screen-users">
         <div class="page-header">
           <h2>Utilisateurs</h2>
@@ -116,7 +113,6 @@
         </div>
       </div>
 
-      -- CATEGORIES --
       <div class="screen" id="screen-categories">
         <div class="page-header">
           <h2>Categories</h2>
@@ -141,7 +137,6 @@
         </div>
       </div>
 
-      -- EVENEMENTS --
       <div class="screen" id="screen-events">
         <div class="page-header"><h2>Evenements</h2></div>
         <div class="card">
@@ -152,7 +147,6 @@
         </div>
       </div>
 
-      <!-- VALIDATIONS -->
       <div class="screen" id="screen-validations">
         <div class="page-header"><h2>Validations en attente</h2></div>
         <div class="card" style="margin-bottom:16px">
@@ -169,7 +163,6 @@
         </div>
       </div>
 
-     -- CONTENEURS --
       <div class="screen" id="screen-conteneurs">
         <div class="page-header">
           <h2>Conteneurs</h2>
@@ -183,7 +176,6 @@
         </div>
       </div>
 
-      <!-- FINANCES -->
       <div class="screen" id="screen-finances">
         <div class="page-header"><h2>Revenus</h2></div>
         <div class="card">
@@ -194,7 +186,6 @@
         </div>
       </div>
 
-      -- ABONNEMENTS --
       <div class="screen" id="screen-abonnements">
         <div class="page-header"><h2>Abonnements</h2></div>
         <div class="kpis" style="margin-bottom:20px">
@@ -217,7 +208,6 @@
         </div>
       </div>
 
-      -- PLANS D'ABONNEMENT --
       <div class="screen" id="screen-plans">
         <div class="page-header">
           <h2>Plans d'abonnement</h2>
@@ -239,9 +229,6 @@
   </div>
 </div>
 
--- ── MODALS ── --
-
--- Modal Plan --
 <div class="modal-bg" id="modal-plan" onclick="closeModal('modal-plan', event)">
   <div class="modal" style="width:400px">
     <div class="modal-head"><h3>Plan d'abonnement</h3><button onclick="closeModal('modal-plan', null)">x</button></div>
@@ -259,7 +246,6 @@
   </div>
 </div>
 
--- Modal Utilisateur --
 <div class="modal-bg" id="modal-user" onclick="closeModal('modal-user', event)">
   <div class="modal">
     <div class="modal-head"><h3>Utilisateur</h3><button onclick="closeModal('modal-user', null)">x</button></div>
@@ -283,7 +269,6 @@
   </div>
 </div>
 
--- Modal des categories --
 <div class="modal-bg" id="modal-cat" onclick="closeModal('modal-cat', event)">
   <div class="modal" style="width:360px">
     <div class="modal-head"><h3>Categorie</h3><button onclick="closeModal('modal-cat', null)">x</button></div>
@@ -297,7 +282,6 @@
   </div>
 </div>
 
--- Modal Conteneur --
 <div class="modal-bg" id="modal-cont" onclick="closeModal('modal-cont', event)">
   <div class="modal" style="width:400px">
     <div class="modal-head"><h3>Conteneur</h3><button onclick="closeModal('modal-cont', null)">x</button></div>
@@ -318,7 +302,6 @@
   </div>
 </div>
 
--- Modal Abonnement (changement de statut) --
 <div class="modal-bg" id="modal-abo" onclick="closeModal('modal-abo', event)">
   <div class="modal" style="width:360px">
     <div class="modal-head"><h3>Modifier le statut</h3><button onclick="closeModal('modal-abo', null)">x</button></div>
