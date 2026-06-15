@@ -1,0 +1,253 @@
+<div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-2">
+  <div>
+    <h1 class="mb-1" style="font-size:1.6rem" id="dash-greeting">Bonjour 🌱</h1>
+    <p class="text-muted mb-0" style="font-size:.8rem" id="dash-subtitle">Chargement…</p>
+  </div>
+  <div class="d-flex align-items-center gap-2 flex-wrap">
+    <button class="btn btn-sm d-flex align-items-center gap-1 premium-only-btn"
+            id="btn-advanced-dashboard"
+            onclick="ProModules.dashboard.openAdvanced()"
+            style="display:none !important">
+      <i class="bi bi-graph-up-arrow"></i>
+      Tableau avancé
+    </button>
+    <button class="btn btn-sm btn-outline-secondary" id="btn-refresh-dash"
+            onclick="ProModules.dashboard.refresh()" title="Rafraîchir">
+      <i class="bi bi-arrow-clockwise"></i>
+    </button>
+  </div>
+</div>
+<div class="row g-3 mb-4" id="kpi-grid">
+  <div class="col-12 col-md-4">
+    <div class="kpi-card kpi-green h-100">
+      <div class="kpi-icon green">🌿</div>
+      <div class="kpi-value green" id="kpi-score">
+        <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+      </div>
+      <div class="kpi-label">Upcycling Score</div>
+      <div class="kpi-delta" id="kpi-score-delta">–</div>
+      <div class="mt-2" style="height:4px;background:var(--uc-vxl);border-radius:2px;overflow:hidden">
+        <div id="kpi-score-bar"
+             style="height:100%;background:var(--uc-vc);border-radius:2px;width:0%;transition:width .6s ease"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-4">
+    <div class="kpi-card kpi-terra h-100">
+      <div class="kpi-icon terra">♻️</div>
+      <div class="kpi-value terra" id="kpi-objects">
+        <div class="spinner-border spinner-border-sm" style="color:var(--uc-tr)" role="status"></div>
+      </div>
+      <div class="kpi-label">Objets sauvés</div>
+      <div class="kpi-delta" id="kpi-objects-delta">–</div>
+      <div class="d-flex gap-1 mt-2 flex-wrap" id="kpi-objects-breakdown"></div>
+    </div>
+  </div>
+  <div class="col-12 col-md-4">
+    <div class="kpi-card kpi-blue h-100">
+      <div class="kpi-icon blue">📋</div>
+      <div class="kpi-value blue" id="kpi-projects">
+        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+      </div>
+      <div class="kpi-label">Projets en cours</div>
+      <div class="kpi-delta" id="kpi-projects-delta">–</div>
+      <div class="d-flex gap-2 mt-2 flex-wrap" id="kpi-projects-breakdown"></div>
+    </div>
+  </div>
+</div>
+<div class="row g-3">
+
+  <div class="col-12 col-xl-7">
+    <div class="pro-card mb-3">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="pro-card-title mb-0">
+          <i class="bi bi-bell-fill me-2" style="color:var(--uc-tr)"></i>Alertes Prioritaires
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge rounded-pill"
+                style="background:var(--uc-trl);color:var(--uc-tr);font-family:var(--uc-mono);font-size:.6rem"
+                id="alert-count-badge">–</span>
+          <a href="#/notifications" class="text-success" style="font-size:.75rem;font-weight:600;text-decoration:none">
+            Voir tout <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+      <div class="d-flex gap-1 mb-3 flex-wrap">
+        <button class="btn btn-sm alert-filter-btn active"
+                data-filter="all" onclick="ProModules.dashboard.filterAlerts('all', this)">
+          Toutes
+        </button>
+        <button class="btn btn-sm alert-filter-btn"
+                data-filter="urgente" onclick="ProModules.dashboard.filterAlerts('urgente', this)">
+          <span class="alert-dot urgente d-inline-block me-1" style="width:7px;height:7px;border-radius:50%;background:var(--uc-tr)"></span>
+          Urgentes
+        </button>
+        <button class="btn btn-sm alert-filter-btn"
+                data-filter="warn" onclick="ProModules.dashboard.filterAlerts('warn', this)">
+          <span class="alert-dot warn d-inline-block me-1" style="width:7px;height:7px;border-radius:50%;background:#F59E0B"></span>
+          Avertissements
+        </button>
+        <button class="btn btn-sm alert-filter-btn"
+                data-filter="info" onclick="ProModules.dashboard.filterAlerts('info', this)">
+          <span class="alert-dot info d-inline-block me-1" style="width:7px;height:7px;border-radius:50%;background:var(--uc-vc)"></span>
+          Infos
+        </button>
+      </div>
+      <div id="alerts-list">
+        <div class="text-center py-4">
+          <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+          <div class="text-muted small mt-2">Chargement des alertes…</div>
+        </div>
+      </div>
+    </div>
+    <div class="pro-card">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="pro-card-title mb-0">
+          <i class="bi bi-lightning-fill me-2" style="color:#F59E0B"></i>Activité récente
+        </div>
+      </div>
+      <div id="activity-list">
+        <div class="text-center py-4">
+          <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-xl-5 d-flex flex-column gap-3">
+
+    <div class="pro-card">
+      <div class="pro-card-title">
+        <i class="bi bi-globe-europe-africa me-2" style="color:var(--uc-vc)"></i>Impact environnemental
+      </div>
+      <div class="text-center mb-3">
+        <div id="impact-score-value"
+             style="font-family:var(--uc-fd);font-size:3.5rem;font-weight:700;color:var(--uc-vf);line-height:1">
+          –
+        </div>
+        <div style="font-family:var(--uc-mono);font-size:.6rem;letter-spacing:.12em;color:var(--uc-gm)">
+          UPCYCLING SCORE
+        </div>
+        <div class="mx-auto mt-2" style="width:140px;height:8px;background:var(--uc-gxl);border-radius:4px;overflow:hidden">
+          <div id="impact-score-bar"
+               style="height:100%;background:linear-gradient(90deg,var(--uc-vm),var(--uc-vc));border-radius:4px;width:0%;transition:width .7s ease"></div>
+        </div>
+      </div>
+      <div id="impact-bars">
+        <div class="text-center py-2">
+          <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+        </div>
+      </div>
+    </div>
+    <div class="pro-card">
+      <div class="pro-card-title">
+        <i class="bi bi-credit-card me-2" style="color:var(--uc-vc)"></i>Mon Abonnement
+      </div>
+      <div id="subscription-widget">
+        <div class="text-center py-2">
+          <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+        </div>
+      </div>
+    </div>
+    <div class="pro-card">
+      <div class="pro-card-title">
+        <i class="bi bi-grid me-2" style="color:var(--uc-vc)"></i>Accès rapides
+      </div>
+      <div class="row g-2">
+        <div class="col-6">
+          <a href="#/scanner"
+             class="quick-action-btn d-flex flex-column align-items-center justify-content-center
+                    text-center text-decoration-none p-3 rounded-3"
+             style="background:var(--uc-vxl);border:1px solid rgba(77,158,106,.2);
+                    color:var(--uc-vm);transition:background .15s;min-height:80px">
+            <i class="bi bi-qr-code-scan mb-1" style="font-size:1.4rem"></i>
+            <span style="font-size:.72rem;font-weight:700">Scanner QR</span>
+          </a>
+        </div>
+        <div class="col-6">
+          <a href="#/map"
+             class="quick-action-btn d-flex flex-column align-items-center justify-content-center
+                    text-center text-decoration-none p-3 rounded-3"
+             style="background:var(--uc-vxl);border:1px solid rgba(77,158,106,.2);
+                    color:var(--uc-vm);transition:background .15s;min-height:80px">
+            <i class="bi bi-geo-alt mb-1" style="font-size:1.4rem"></i>
+            <span style="font-size:.72rem;font-weight:700">Carte collecte</span>
+          </a>
+        </div>
+        <div class="col-6">
+          <a href="#/projects/new"
+             class="quick-action-btn d-flex flex-column align-items-center justify-content-center
+                    text-center text-decoration-none p-3 rounded-3"
+             style="background:var(--uc-trl);border:1px solid rgba(196,98,58,.2);
+                    color:var(--uc-tr);transition:background .15s;min-height:80px">
+            <i class="bi bi-plus-circle mb-1" style="font-size:1.4rem"></i>
+            <span style="font-size:.72rem;font-weight:700">Nouveau projet</span>
+          </a>
+        </div>
+        <div class="col-6">
+          <a href="#/marketplace"
+             class="quick-action-btn d-flex flex-column align-items-center justify-content-center
+                    text-center text-decoration-none p-3 rounded-3"
+             style="background:#EFF6FF;border:1px solid rgba(59,130,246,.2);
+                    color:#1D4ED8;transition:background .15s;min-height:80px">
+            <i class="bi bi-shop mb-1" style="font-size:1.4rem"></i>
+            <span style="font-size:.72rem;font-weight:700">Marketplace</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="modal-advanced-dashboard" tabindex="-1"
+     aria-labelledby="modal-advanced-label" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 rounded-4">
+      <div class="modal-header border-0 pb-0"
+           style="background:linear-gradient(135deg,var(--uc-vf),var(--uc-vm));border-radius:16px 16px 0 0">
+        <h5 class="modal-title text-white d-flex align-items-center gap-2" id="modal-advanced-label">
+          <i class="bi bi-graph-up-arrow"></i>
+          Tableau de Bord Avancé
+          <span class="badge ms-1"
+                style="background:rgba(255,255,255,.2);font-size:.6rem;font-family:var(--uc-mono)">
+            PREMIUM
+          </span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4" id="advanced-dashboard-content">
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .alert-filter-btn {
+    font-size: .7rem;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: .25rem .75rem;
+    border: 1.5px solid var(--uc-bs);
+    background: #fff;
+    color: var(--uc-gm);
+    transition: all .12s;
+  }
+  .alert-filter-btn:hover { border-color: var(--uc-vc); color: var(--uc-vm); }
+  .alert-filter-btn.active { background: var(--uc-vf); color: var(--uc-bw); border-color: var(--uc-vf); }
+  .impact-bar-row {
+    display: flex; align-items: center; gap: .75rem; margin-bottom: .65rem;
+  }
+  .impact-bar-label { font-size: .72rem; font-weight: 600; width: 105px; flex-shrink: 0; color: var(--uc-gc); }
+  .impact-bar-bg { flex: 1; height: 8px; background: var(--uc-gxl); border-radius: 4px; overflow: hidden; }
+  .impact-bar-fill { height: 100%; border-radius: 4px; transition: width .7s ease; }
+  .impact-bar-val { font-size: .68rem; font-family: var(--uc-mono); color: var(--uc-gm); width: 55px; text-align: right; flex-shrink: 0; }
+  .quick-action-btn:hover { filter: brightness(.95); }
+  .activity-item {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .6rem 0; border-bottom: 1px solid var(--uc-gxl);
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-icon-circle {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .8rem; flex-shrink: 0;
+  }
+</style>
