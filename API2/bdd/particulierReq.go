@@ -5,7 +5,7 @@ import (
 	"upcycleconnect/models"
 )
 
-// Créer une annonce
+// creer annonce
 func CreateAnnonce(a models.Annonce) error {
 	_, err := Db.Exec(
 		`INSERT INTO pa2026.annonce (titre, description, type, prix, statut_validation, code_postal, ville, projet_potentiel, id_user, id_categorie)
@@ -18,7 +18,7 @@ func CreateAnnonce(a models.Annonce) error {
 	return nil
 }
 
-// Créer un dépôt en conteneur → table depot_box
+// creer dépôt en conteneur dans table depot_box
 func CreateDepot(d models.DepotBox) error {
 	_, err := Db.Exec(
 		`INSERT INTO pa2026.depot_box (code_ouverture, code_barres_pro, statut, id_user, id_box)
@@ -57,7 +57,7 @@ func GetDepotsByUser(idUser int) ([]models.DepotBox, error) {
 	return depots, rows.Err()
 }
 
-// Inscription à un événement → table inscription
+// Inscription à un evenement dans la table
 func CreateInscription(idUser int, idEvent int) error {
 	// Vérifier si déjà inscrit
 	var count int
@@ -82,7 +82,7 @@ func CreateInscription(idUser int, idEvent int) error {
 	return nil
 }
 
-// Récupérer les inscriptions d'un user
+// Recup inscriptions d'un user
 func GetInscriptions(idUser int) ([]models.Evenement, error) {
 	var events []models.Evenement
 

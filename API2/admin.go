@@ -40,6 +40,8 @@ func main() {
 	http.HandleFunc("GET /admin/categories", admin.GetAllCategories)
 	http.HandleFunc("POST /admin/categories/add", admin.CreateCategorie)
 	http.HandleFunc("OPTIONS /admin/categories/add", admin.CreateCategorie)
+	http.HandleFunc("PUT /admin/categories/modify/{id}", admin.UpdateCategorie)
+	http.HandleFunc("OPTIONS /admin/categories/modify/{id}", admin.UpdateCategorie)
 	http.HandleFunc("DELETE /admin/categories/delete/{id}", admin.DeleteCategorie)
 	http.HandleFunc("OPTIONS /admin/categories/delete/{id}", admin.DeleteCategorie)
 
@@ -49,6 +51,8 @@ func main() {
 	http.HandleFunc("OPTIONS /admin/annonces/validate/{id}", admin.ValidateAnnonce)
 	http.HandleFunc("PUT /admin/annonces/refuse/{id}", admin.RefuseAnnonce)
 	http.HandleFunc("OPTIONS /admin/annonces/refuse/{id}", admin.RefuseAnnonce)
+	http.HandleFunc("DELETE /admin/annonces/delete/{id}", admin.DeleteAnnonce)
+	http.HandleFunc("OPTIONS /admin/annonces/delete/{id}", admin.DeleteAnnonce)
 
 	// Evenements
 	http.HandleFunc("GET /admin/evenements", admin.GetAllEvenements)
@@ -58,6 +62,8 @@ func main() {
 	http.HandleFunc("OPTIONS /admin/evenements/validate/{id}", admin.ValidateEvenement)
 	http.HandleFunc("PUT /admin/evenements/refuse/{id}", admin.RefuseEvenement)
 	http.HandleFunc("OPTIONS /admin/evenements/refuse/{id}", admin.RefuseEvenement)
+	http.HandleFunc("DELETE /admin/evenements/delete/{id}", admin.DeleteEvenement)
+	http.HandleFunc("OPTIONS /admin/evenements/delete/{id}", admin.DeleteEvenement)
 
 	// Conteneurs
 	http.HandleFunc("GET /admin/conteneurs", admin.GetAllConteneurs)
@@ -65,6 +71,8 @@ func main() {
 	http.HandleFunc("OPTIONS /admin/conteneurs/add", admin.CreateConteneur)
 	http.HandleFunc("PUT /admin/conteneurs/modify/{id}", admin.UpdateConteneur)
 	http.HandleFunc("OPTIONS /admin/conteneurs/modify/{id}", admin.UpdateConteneur)
+	http.HandleFunc("DELETE /admin/conteneurs/delete/{id}", admin.DeleteConteneur)
+	http.HandleFunc("OPTIONS /admin/conteneurs/delete/{id}", admin.DeleteConteneur)
 
 	// Depots
 	http.HandleFunc("GET /admin/depots", admin.GetAllDepots)
@@ -73,12 +81,30 @@ func main() {
 
 	// Commandes
 	http.HandleFunc("GET /admin/commandes", admin.GetAllCommandes)
+
+	// Abonnements
 	http.HandleFunc("GET /admin/abonnements", admin.GetAllAbonnements)
+	http.HandleFunc("PUT /admin/abonnements/statut/{id}", admin.UpdateAbonnementStatut)
+	http.HandleFunc("OPTIONS /admin/abonnements/statut/{id}", admin.UpdateAbonnementStatut)
+	http.HandleFunc("DELETE /admin/abonnements/delete/{id}", admin.DeleteAbonnement)
+	http.HandleFunc("OPTIONS /admin/abonnements/delete/{id}", admin.DeleteAbonnement)
+
+	// Stats financières
+	http.HandleFunc("GET /admin/stats", admin.GetStats)
+
+	// Plans d'abonnement
+	http.HandleFunc("GET /admin/plans", admin.GetAllPlans)
+	http.HandleFunc("POST /admin/plans/add", admin.CreatePlan)
+	http.HandleFunc("OPTIONS /admin/plans/add", admin.CreatePlan)
+	http.HandleFunc("PUT /admin/plans/modify/{id}", admin.UpdatePlan)
+	http.HandleFunc("OPTIONS /admin/plans/modify/{id}", admin.UpdatePlan)
+	http.HandleFunc("DELETE /admin/plans/delete/{id}", admin.DeletePlan)
+	http.HandleFunc("OPTIONS /admin/plans/delete/{id}", admin.DeletePlan)
 
 	// Articles
 	http.HandleFunc("GET /admin/articles", admin.GetArticlesHandler)
 
-	// Particulier
+	//PARTICULIER
 	http.HandleFunc("POST /particulier/annonces/add", admin.CreateAnnonceParticulier)
 	http.HandleFunc("OPTIONS /particulier/annonces/add", admin.CreateAnnonceParticulier)
 	http.HandleFunc("PUT /particulier/annonces/modify/{id}", admin.UpdateAnnonceParticulier)
@@ -108,6 +134,34 @@ func main() {
 	http.HandleFunc("GET /forum/topics/{idTopic}/messages", admin.GetMessagesHandler)
 	http.HandleFunc("POST /forum/topics/{idTopic}/messages", admin.CreateMessageHandler)
 	http.HandleFunc("OPTIONS /forum/topics/{idTopic}/messages", admin.CreateMessageHandler)
+
+	// --- Conseils & News ---
+	http.HandleFunc("GET /admin/conseils", admin.GetAllConseils)
+	http.HandleFunc("GET /salarie/conseils/{id}", admin.GetConseilsBySalarie)
+	http.HandleFunc("POST /salarie/conseils/add", admin.CreateConseil)
+	http.HandleFunc("OPTIONS /salarie/conseils/add", admin.CreateConseil)
+	http.HandleFunc("PUT /salarie/conseils/modify/{id}", admin.UpdateConseil)
+	http.HandleFunc("OPTIONS /salarie/conseils/modify/{id}", admin.UpdateConseil)
+	http.HandleFunc("PUT /salarie/conseils/publish/{id}", admin.PublishConseil)
+	http.HandleFunc("OPTIONS /salarie/conseils/publish/{id}", admin.PublishConseil)
+	http.HandleFunc("DELETE /salarie/conseils/delete/{id}", admin.DeleteConseil)
+	http.HandleFunc("OPTIONS /salarie/conseils/delete/{id}", admin.DeleteConseil)
+
+	// --- Forums (suivi & modération) ---
+	http.HandleFunc("GET /salarie/forum/sujets", admin.GetAllForumSujets)
+	http.HandleFunc("GET /salarie/forum/sujet/{id}/messages", admin.GetMessagesBySujet)
+	http.HandleFunc("GET /salarie/forum/signalements", admin.GetMessagesSignales)
+	http.HandleFunc("PUT /salarie/forum/message/hide/{id}", admin.HideMessage)
+	http.HandleFunc("OPTIONS /salarie/forum/message/hide/{id}", admin.HideMessage)
+	http.HandleFunc("PUT /salarie/forum/message/dismiss/{id}", admin.DismissSignalement)
+	http.HandleFunc("OPTIONS /salarie/forum/message/dismiss/{id}", admin.DismissSignalement)
+	http.HandleFunc("PUT /salarie/forum/sujet/close/{id}", admin.CloseSujet)
+	http.HandleFunc("OPTIONS /salarie/forum/sujet/close/{id}", admin.CloseSujet)
+
+	// --- Planning & Formations du salarié ---
+	http.HandleFunc("GET /salarie/planning/{id}", admin.GetPlanningSalarie)
+	http.HandleFunc("POST /salarie/formations/add", admin.CreateFormationSalarie)
+	http.HandleFunc("OPTIONS /salarie/formations/add", admin.CreateFormationSalarie)
 
 	fmt.Println("Serveur lancé sur : http://localhost:8081")
 	fmt.Println("Swagger UI      : http://localhost:8081/swagger")

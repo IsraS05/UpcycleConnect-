@@ -22,6 +22,9 @@ async function setLang(lang) {
     I18N = await fetch(`${API}/dictionnaire/${lang}`).then(r => r.json()) || {}
   } catch { I18N = {} }
   applyI18n()
+//SESSION
+function saveSession(user) {
+  localStorage.setItem('uc_user', JSON.stringify(user))
 }
 
 function applyI18n() {
@@ -165,7 +168,7 @@ function logout() {
   document.getElementById('app-page').style.display   = 'none'
 }
 
-// NAVIGATION
+// NAVIGATION 
 function go(page, el) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
   document.getElementById('screen-' + page).classList.add('active')
@@ -184,7 +187,7 @@ function go(page, el) {
   if (page === 'profil')    loadProfil()
 }
 
-// DASHBOARD
+// DASHBOARD 
 async function loadDashboard() {
   try {
     const [annonces, evenements] = await Promise.all([
@@ -220,6 +223,7 @@ async function loadCategories() {
 }
 
 let mesAnnoncesCache = []
+//MES ANNONCES 
 async function loadMesAnnonces() {
   loadCategories()
   try {
@@ -327,7 +331,7 @@ async function deleteAnnonce(id) {
   } catch { toast('Erreur suppression') }
 }
 
-// EVENTS
+//EVENEMENTS
 async function loadEvenements() {
   try {
     const [events, inscriptions] = await Promise.all([
@@ -449,7 +453,7 @@ async function annulerInscription(idEvent) {
   } catch { toast('Erreur serveur') }
 }
 
-// dépot conteneur
+//CONTENEURS 
 async function loadConteneurs() {
   try {
     const conteneurs = await fetch(`${API}/admin/conteneurs`).then(r => r.json())
@@ -513,6 +517,7 @@ function getLevel(score) {
   return { label: 'Bronze 🥉', color: '#a1663b' }
 }
 
+//SCORE 
 async function loadScore() {
   try {
     const annonces = await fetch(`${API}/admin/annonces`).then(r => r.json())
@@ -719,6 +724,7 @@ function planningDate(d) {
   </div>`
 }
 
+//HELPERS 
 function openModal(id)  { document.getElementById(id).classList.add('open') }
 function closeModal(id, e) {
   if (!e || e.target.id === id) document.getElementById(id).classList.remove('open')
@@ -731,4 +737,5 @@ function toast(msg) {
   setTimeout(() => t.style.display = 'none', 2500)
 }
 
+//charger la session au démarrage
 window.addEventListener('load', loadSession)

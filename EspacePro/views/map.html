@@ -1,0 +1,162 @@
+<div class="d-flex align-items-start justify-content-between mb-3 flex-wrap gap-2">
+  <div>
+    <h1 class="mb-1" style="font-size:1.6rem">Carte & Collecte</h1>
+    <p class="text-muted mb-0" style="font-size:.8rem">
+      Conteneurs disponibles autour de vous · Cliquez pour les détails
+    </p>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <button class="btn btn-sm btn-outline-secondary"
+            onclick="ProModules.map.centerOnUser()">
+      <i class="bi bi-crosshair me-1"></i>Ma position
+    </button>
+    <button class="btn btn-sm"
+            style="background:var(--uc-vf);color:#fff;font-weight:600"
+            onclick="ProModules.map.openScanner()">
+      <i class="bi bi-qr-code-scan me-1"></i>Scanner QR
+    </button>
+  </div>
+</div>
+<div class="pro-card p-0 mb-3 overflow-hidden">
+  <div class="d-flex align-items-center gap-2 px-3 py-2"
+       style="background:var(--uc-gxl);border-bottom:1px solid var(--uc-bs)">
+    <div class="d-flex gap-1" id="map-status-filters">
+      <button class="btn btn-sm map-status-btn active" data-status="all"
+              onclick="ProModules.map.filterStatus('all', this)">
+        Tous
+      </button>
+      <button class="btn btn-sm map-status-btn" data-status="libre"
+              onclick="ProModules.map.filterStatus('libre', this)">
+        <span class="map-dot" style="background:var(--uc-vc)"></span> Libres
+      </button>
+      <button class="btn btn-sm map-status-btn" data-status="partiel"
+              onclick="ProModules.map.filterStatus('partiel', this)">
+        <span class="map-dot" style="background:#F59E0B"></span> Partiels
+      </button>
+      <button class="btn btn-sm map-status-btn" data-status="plein"
+              onclick="ProModules.map.filterStatus('plein', this)">
+        <span class="map-dot" style="background:var(--uc-tr)"></span> Pleins
+      </button>
+    </div>
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <span id="map-count-label"
+            style="font-size:.65rem;font-family:var(--uc-mono);color:var(--uc-gm)">
+        – conteneurs
+      </span>
+      <select class="form-select form-select-sm"
+              style="font-size:.7rem;width:auto;border-color:var(--uc-bs)"
+              onchange="ProModules.map.setRadius(this.value)">
+        <option value="1000">1 km</option>
+        <option value="2000" selected>2 km</option>
+        <option value="5000">5 km</option>
+        <option value="10000">10 km</option>
+      </select>
+    </div>
+  </div>
+  <div id="leaflet-map" style="height:400px;width:100%;z-index:1"></div>
+</div>
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h2 style="font-size:1rem;color:var(--uc-vf);margin:0">
+    <i class="bi bi-box-seam me-2"></i>Conteneurs à proximité
+  </h2>
+  <span style="font-size:.72rem;color:var(--uc-gm)" id="list-subtitle">
+    Triés par distance
+  </span>
+</div>
+<div class="row g-2" id="containers-list">
+  <div class="col-12 text-center py-4">
+    <div class="spinner-border text-success" role="status"></div>
+    <div class="text-muted small mt-2">Localisation en cours…</div>
+  </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas-container"
+     style="width:360px;border-left:1px solid var(--uc-bs)">
+  <div class="offcanvas-header border-bottom" style="background:var(--uc-vf)">
+    <h5 class="offcanvas-title text-white d-flex align-items-center gap-2">
+      <i class="bi bi-box-seam"></i>
+      <span id="oc-title">Conteneur</span>
+    </h5>
+    <button type="button" class="btn-close btn-close-white"
+            data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body p-0" id="oc-body">
+  </div>
+</div>
+<style>
+  .map-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 2px;
+  }
+  .map-status-btn {
+    font-size: .68rem;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: .2rem .65rem;
+    border: 1.5px solid var(--uc-bs);
+    background: #fff;
+    color: var(--uc-gm);
+    transition: all .12s;
+  }
+  .map-status-btn:hover  { border-color: var(--uc-vc); color: var(--uc-vm); }
+  .map-status-btn.active { background: var(--uc-vf); color: #fff; border-color: var(--uc-vf); }
+  .container-card {
+    background: #fff;
+    border: 1px solid var(--uc-bs);
+    border-radius: 12px;
+    padding: .85rem;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
+    border-left: 3px solid transparent;
+  }
+  .container-card:hover {
+    box-shadow: 0 2px 8px rgba(28,61,43,.1);
+    border-left-color: var(--uc-vc);
+  }
+  .container-card.plein   { border-left-color: var(--uc-tr); }
+  .container-card.partiel { border-left-color: #F59E0B; }
+  .container-card.libre   { border-left-color: var(--uc-vc); }
+  .container-card.selected {
+    border-color: var(--uc-vf);
+    box-shadow: 0 0 0 2px rgba(28,61,43,.15);
+  }
+  .fill-bar-sm {
+    height: 5px;
+    background: var(--uc-gxl);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: .4rem;
+  }
+  .fill-bar-sm-inner { height: 100%; border-radius: 3px; }
+  .uc-marker {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2.5px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    cursor: pointer;
+  }
+  .uc-marker.libre   { background: var(--uc-vc); }
+  .uc-marker.partiel { background: #F59E0B; }
+  .uc-marker.plein   { background: var(--uc-tr); }
+  .uc-marker.user    { background: #3B82F6; }
+  #oc-body .oc-section {
+    padding: 1rem;
+    border-bottom: 1px solid var(--uc-gxl);
+  }
+  #oc-body .oc-item-row {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .5rem 0;
+    border-bottom: 1px solid var(--uc-gxl);
+    font-size: .78rem;
+  }
+  #oc-body .oc-item-row:last-child { border-bottom: none; }
+</style>

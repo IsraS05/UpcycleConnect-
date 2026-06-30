@@ -19,7 +19,7 @@ func Login(email string, mdp string) (*models.User, error) {
 		return nil, fmt.Errorf("utilisateur non trouvé")
 	}
 
-	// Vérifier le mot de passe
+	// verifier le mot de passe
 	err = bcrypt.CompareHashAndPassword([]byte(u.MotDePasse), []byte(mdp))
 	if err != nil {
 		return nil, fmt.Errorf("mot de passe incorrect")
