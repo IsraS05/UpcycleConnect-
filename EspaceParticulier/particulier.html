@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -12,29 +14,24 @@
 <div id="login-page" class="login-wrap">
   <div class="login-box">
     <h2>UpcycleConnect</h2>
-    <p class="sub">La plateforme de l'upcycling</p>
-
+    <p class="sub" data-i18n="login.sub">La plateforme de l'upcycling</p>
     <div class="login-tabs">
-      <div class="login-tab active" onclick="switchTab('connexion')">Connexion</div>
-      <div class="login-tab" onclick="switchTab('inscription')">Inscription</div>
+      <div class="login-tab active" onclick="switchTab('connexion')" data-i18n="login.tab_connexion">Connexion</div>
+      <div class="login-tab" onclick="switchTab('inscription')" data-i18n="login.tab_inscription">Inscription</div>
     </div>
-
-    <!-- Connexion -->
     <div id="tab-connexion">
-      <div class="field"><label>Email</label><input id="login-email" type="email" placeholder="email@exemple.fr"></div>
-      <div class="field"><label>Mot de passe</label><input id="login-mdp" type="password" placeholder="••••••••"></div>
-      <button class="btn btn-dark" style="width:100%;margin-top:8px" onclick="login()">Se connecter</button>
+      <div class="field"><label data-i18n="field.email">Email</label><input id="login-email" type="email" placeholder="email@exemple.fr" data-i18n-ph="ph.email" onkeydown="if(event.key==='Enter')login()"></div>
+      <div class="field"><label data-i18n="field.password">Mot de passe</label><input id="login-mdp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"></div>
+      <button class="btn btn-dark" style="width:100%;margin-top:8px" onclick="login()" data-i18n="login.btn_connexion">Se connecter</button>
     </div>
-
-    <!-- Inscription -->
     <div id="tab-inscription" style="display:none">
       <div class="row2">
-        <div class="field"><label>Prenom</label><input id="reg-prenom" type="text" placeholder="Prenom"></div>
-        <div class="field"><label>Nom</label><input id="reg-nom" type="text" placeholder="Nom"></div>
+        <div class="field"><label data-i18n="field.prenom">Prénom</label><input id="reg-prenom" type="text" placeholder="Prénom" data-i18n-ph="ph.prenom" onkeydown="if(event.key==='Enter')register()"></div>
+        <div class="field"><label data-i18n="field.nom">Nom</label><input id="reg-nom" type="text" placeholder="Nom" data-i18n-ph="ph.nom" onkeydown="if(event.key==='Enter')register()"></div>
       </div>
-      <div class="field"><label>Email</label><input id="reg-email" type="email" placeholder="email@exemple.fr"></div>
-      <div class="field"><label>Mot de passe</label><input id="reg-mdp" type="password" placeholder="••••••••"></div>
-      <button class="btn btn-dark" style="width:100%;margin-top:8px" onclick="register()">S'inscrire</button>
+      <div class="field"><label data-i18n="field.email">Email</label><input id="reg-email" type="email" placeholder="email@exemple.fr" data-i18n-ph="ph.email" onkeydown="if(event.key==='Enter')register()"></div>
+      <div class="field"><label data-i18n="field.password">Mot de passe</label><input id="reg-mdp" type="password" placeholder="6 caractères minimum" data-i18n-ph="ph.password_min" onkeydown="if(event.key==='Enter')register()"></div>
+      <button class="btn btn-dark" style="width:100%;margin-top:8px" onclick="register()" data-i18n="login.btn_inscription">S'inscrire</button>
     </div>
   </div>
 </div>
@@ -43,31 +40,34 @@
 <div id="app-page" class="layout" style="display:none">
 
   <aside class="sidebar">
-    <div class="logo">
-      UpcycleConnect
-      <span>Espace particulier</span>
-    </div>
+    <div class="logo">UpcycleConnect<span data-i18n="side.subtitle">Espace particulier</span></div>
     <nav>
-      <div class="label">Mon espace</div>
-      <a class="active" onclick="go('dashboard', this)">Dashboard</a>
-      <a onclick="go('annonces', this)">Mes annonces</a>
-      <a onclick="go('conteneur', this)">Depot conteneur</a>
-      <a onclick="go('score', this)">Upcycling Score</a>
+      <div class="label" data-i18n="menu.espace">Mon espace</div>
+      <a class="active" onclick="go('dashboard', this)" data-i18n="menu.dashboard">Dashboard</a>
+      <a onclick="go('annonces', this)" data-i18n="menu.annonces">Mes annonces</a>
+      <a onclick="go('conteneur', this)" data-i18n="menu.conteneur">Dépôt conteneur</a>
+      <a onclick="go('score', this)" data-i18n="menu.score">Mon Score</a>
+      <a onclick="go('profil', this)" data-i18n="menu.profil">Mon profil</a>
 
-      <div class="label">Catalogue</div>
-      <a onclick="go('catalogue', this)">Formations & Evenements</a>
-      <a onclick="go('planning', this)">Mon planning</a>
+      <div class="label" data-i18n="menu.catalogue">Catalogue</div>
+      <a onclick="go('catalogue', this)" data-i18n="menu.formations">Formations & Événements</a>
+      <a onclick="go('planning', this)" data-i18n="menu.planning">Mon planning</a>
+      <a onclick="go('conseils', this)" data-i18n="menu.conseils">Conseils & Articles</a>
+      <a onclick="go('forum', this)" data-i18n="menu.forum">Forum</a>
     </nav>
     <div class="sidebar-user">
       <strong id="user-name">—</strong>
-      <span id="user-role">Particulier</span>
+      <a style="font-size:11px;color:#888;cursor:pointer" onclick="logout()" data-i18n="btn.logout">Déconnexion</a>
     </div>
   </aside>
 
   <div class="main">
     <div class="topbar">
       <h1 id="page-title">Dashboard</h1>
-      <button class="btn" onclick="logout()">Deconnexion</button>
+      <select id="lang-select" onchange="setLang(this.value)">
+        <option value="fr">FR</option>
+        <option value="en">EN</option>
+      </select>
     </div>
 
     <div class="content">
@@ -75,22 +75,18 @@
       -- DASHBOARD --
       <div class="screen active" id="screen-dashboard">
         <div class="grid3" style="margin-bottom:16px">
-          <div class="kpi"><div class="num" id="dash-annonces">0</div><div class="lbl">Mes annonces</div></div>
-          <div class="kpi"><div class="num" id="dash-score">0</div><div class="lbl">Upcycling Score</div></div>
-          <div class="kpi"><div class="num" id="dash-events">0</div><div class="lbl">Formations dispo</div></div>
+          <div class="kpi"><div class="num" id="dash-annonces">0</div><div class="lbl" data-i18n="menu.annonces">Mes annonces</div></div>
+          <div class="kpi"><div class="num" id="dash-score">0</div><div class="lbl" data-i18n="kpi.score">Upcycling Score</div></div>
+          <div class="kpi"><div class="num" id="dash-events">0</div><div class="lbl" data-i18n="kpi.formations_dispo">Formations dispo</div></div>
         </div>
         <div class="grid2">
           <div class="card">
-            <div class="card-head"><h3>Mes dernieres annonces</h3></div>
-            <div class="card-body" id="dash-mes-annonces">
-              <div class="placeholder">Chargement...</div>
-            </div>
+            <div class="card-head"><h3 data-i18n="card.dernieres_annonces">Mes dernières annonces</h3><button class="btn btn-sm btn-dark" onclick="go('annonces', null)" data-i18n="btn.voir_tout">Voir tout</button></div>
+            <div class="card-body" id="dash-mes-annonces"><div class="placeholder">Chargement...</div></div>
           </div>
           <div class="card">
-            <div class="card-head"><h3>Prochains evenements</h3></div>
-            <div class="card-body" id="dash-events-list">
-              <div class="placeholder">Chargement...</div>
-            </div>
+            <div class="card-head"><h3 data-i18n="card.prochains_events">Prochains événements</h3><button class="btn btn-sm btn-dark" onclick="go('catalogue', null)" data-i18n="btn.voir_tout">Voir tout</button></div>
+            <div class="card-body" id="dash-events-list"><div class="placeholder">Chargement...</div></div>
           </div>
         </div>
       </div>
@@ -98,76 +94,69 @@
       -- MES ANNONCES --
       <div class="screen" id="screen-annonces">
         <div class="page-header">
-          <h2>Mes annonces</h2>
-          <button class="btn btn-dark" onclick="openModal('modal-annonce')">+ Nouvelle annonce</button>
-        </div>
-        <div id="liste-annonces">
-          <div class="placeholder">Chargement...</div>
-        </div>
-      </div>
-
-      -- DEPOT CONTENEUR --
-      <div class="screen" id="screen-conteneur">
-        <div class="page-header"><h2>Depot en conteneur</h2></div>
-        <div class="card">
-          <div class="card-head"><h3>Faire une demande de depot</h3></div>
-          <div class="card-body">
-            <p style="font-size:13px;color:#555;margin-bottom:16px">
-              Remplissez ce formulaire pour demander a deposer un objet dans un de nos conteneurs.
-              Apres validation, vous recevrez un code d'ouverture.
-            </p>
-            <div class="field"><label>Titre de l'objet</label><input id="depot-titre" type="text" placeholder="Ex: Chaise en bois"></div>
-            <div class="field"><label>Description</label><textarea id="depot-desc" placeholder="Decrivez l'objet..."></textarea></div>
-            <div class="row2">
-              <div class="field"><label>Categorie</label>
-                <select id="depot-categorie">
-                  <option>Mobilier</option>
-                  <option>Textile</option>
-                  <option>Electronique</option>
-                  <option>Outillage</option>
-                </select>
-              </div>
-              <div class="field"><label>Conteneur</label>
-                <select id="depot-conteneur">
-                  <option>Chargement...</option>
-                </select>
-              </div>
-            </div>
-            <button class="btn btn-dark" onclick="demandeDepot()">Soumettre la demande</button>
+          <h2 data-i18n="title.annonces">Mes annonces</h2>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="ann-filtre" onchange="loadMesAnnonces()">
+              <option value="" data-i18n="filtre.toutes">Toutes</option>
+              <option value="En attente" data-i18n="filtre.en_attente">En attente</option>
+              <option value="Valide" data-i18n="filtre.validees">Validées</option>
+              <option value="Refuse" data-i18n="filtre.refusees">Refusées</option>
+            </select>
+            <button class="btn btn-dark" onclick="newAnnonce()" data-i18n="btn.new_annonce">+ Nouvelle annonce</button>
           </div>
         </div>
-        <div class="card" style="margin-top:16px">
-    <div class="card-head"><h3>Mes demandes</h3></div>
-    <div class="card-body" id="mes-depots">
-        <div class="placeholder">Chargement...</div>
-    </div>
-</div>
+        <div id="liste-annonces"><div class="placeholder">Chargement...</div></div>
       </div>
 
-      -- UPCYCLING SCORE --
-      <div class="screen" id="screen-score">
-        <div class="page-header"><h2>Mon Upcycling Score</h2></div>
+         -- DEPOT CONTENEUR --
+      <div class="screen" id="screen-conteneur">
+        <div class="page-header"><h2 data-i18n="title.conteneur">Dépôt en conteneur</h2></div>
         <div class="grid2">
-          <div class="score-box">
-            <div class="num" id="score-val">0</div>
-            <div class="lbl">UPCYCLING SCORE</div>
-            <div class="stats">
-              <div>
-                <div class="stat-val" id="score-kg">0</div>
-                <div class="stat-key">kg evites</div>
+          <div class="card">
+            <div class="card-head"><h3 data-i18n="card.nouvelle_demande">Nouvelle demande</h3></div>
+            <div class="card-body">
+              <div class="field"><label data-i18n="field.titre_objet">Titre de l'objet</label><input id="depot-titre" type="text" placeholder="Ex: Chaise en bois" data-i18n-ph="ph.ex_chaise"></div>
+              <div class="field"><label data-i18n="field.description">Description</label><textarea id="depot-desc" placeholder="Décrivez l'objet..." data-i18n-ph="ph.decrivez"></textarea></div>
+              <div class="field"><label data-i18n="field.conteneur_cible">Conteneur cible</label>
+                <select id="depot-conteneur"><option>Chargement...</option></select>
               </div>
-              <div>
-                <div class="stat-val" id="score-objets">0</div>
-                <div class="stat-key">objets deposes</div>
-              </div>
+              <button class="btn btn-dark" onclick="demandeDepot()" data-i18n="btn.soumettre">Soumettre la demande</button>
             </div>
           </div>
           <div class="card">
-            <div class="card-head"><h3>Comment ameliorer mon score ?</h3></div>
-            <div class="card-body" style="font-size:13px;color:#555;line-height:1.8">
-              <p>Deposer un objet dans un conteneur +50 pts</p>
-              <p>Faire valider une annonce +20 pts</p>
-              <p>S'inscrire a une formation +10 pts</p>
+            <div class="card-head"><h3 data-i18n="card.mes_demandes">Mes demandes</h3></div>
+            <div class="card-body" id="mes-depots"><div class="placeholder">Chargement...</div></div>
+          </div>
+        </div>
+      </div>
+
+   
+      -- UPCYCLING SCORE --
+      <div class="screen" id="screen-score">
+        <div class="page-header"><h2 data-i18n="title.score">Mon Upcycling Score</h2></div>
+        <div class="grid2">
+          <div class="score-box">
+            <div class="num" id="score-val">0</div>
+            <div class="lbl" data-i18n="score.label">UPCYCLING SCORE</div>
+            <div style="margin-top:8px;font-size:16px;font-weight:700" id="score-level">Bronze 🥉</div>
+            <div class="stats">
+              <div><div class="stat-val" id="score-kg">0</div><div class="stat-key" data-i18n="score.kg">kg CO₂ évités</div></div>
+              <div><div class="stat-val" id="score-objets">0</div><div class="stat-key" data-i18n="score.objets">objets déposés</div></div>
+            </div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:12px">
+              <div class="card-head"><h3 data-i18n="card.contributions">Mes contributions</h3></div>
+              <div class="card-body" id="score-detail"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3 data-i18n="card.niveaux">Niveaux</h3></div>
+              <div class="card-body" style="font-size:13px;line-height:2">
+                <div data-i18n="score.bronze">🥉 Bronze — 0 à 99 pts</div>
+                <div data-i18n="score.argent">🥈 Argent — 100 à 499 pts</div>
+                <div data-i18n="score.or">🥇 Or — 500 à 999 pts</div>
+                <div data-i18n="score.platine">🏆 Platine — 1000 pts et +</div>
+              </div>
             </div>
           </div>
         </div>
@@ -175,19 +164,107 @@
 
       -- CATALOGUE --
       <div class="screen" id="screen-catalogue">
-        <div class="page-header"><h2>Formations & Evenements</h2></div>
-        <div id="liste-evenements" class="grid2">
-          <div class="placeholder">Chargement...</div>
+        <div class="page-header">
+          <h2 data-i18n="title.catalogue">Formations & Événements</h2>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+            <input id="ev-search" type="text" placeholder="Rechercher..." data-i18n-ph="ph.search_events" oninput="loadEvenements()">
+            <select id="ev-format" onchange="loadEvenements()">
+              <option value="" data-i18n="catalogue.format_tous">Tous les formats</option>
+              <option value="En ligne" data-i18n="format.enligne">En ligne</option>
+              <option value="Presentiel" data-i18n="format.presentiel">Présentiel</option>
+            </select>
+            <label style="font-size:13px;color:#666" data-i18n="field.a_partir_du">À partir du</label>
+            <input id="ev-date" type="date" onchange="loadEvenements()">
+          </div>
         </div>
+        <div id="liste-evenements" class="grid2"><div class="placeholder">Chargement...</div></div>
       </div>
 
       -- PLANNING --
       <div class="screen" id="screen-planning">
-        <div class="page-header"><h2>Mon planning</h2></div>
+        <div class="page-header"><h2 data-i18n="title.planning">Mon planning</h2></div>
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-head" style="display:flex;align-items:center;gap:8px">
+            <button class="btn btn-sm" onclick="calPrev()">‹</button>
+            <h3 id="cal-title" style="flex:1;text-align:center;margin:0"></h3>
+            <button class="btn btn-sm" onclick="calNext()">›</button>
+          </div>
+          <div class="card-body"><div id="calendar"></div></div>
+        </div>
         <div class="card">
-          <div class="card-head"><h3>Mes inscriptions</h3></div>
-          <div class="card-body" id="liste-planning">
-            <div class="placeholder">Aucune inscription pour le moment</div>
+          <div class="card-head"><h3 data-i18n="card.mes_inscriptions">Mes inscriptions</h3></div>
+          <div class="card-body" id="liste-planning"><div class="placeholder">Chargement...</div></div>
+        </div>
+      </div>
+
+      <!-- CONSEILS -->
+      <div class="screen" id="screen-conseils">
+        <div class="page-header">
+          <h2 data-i18n="menu.conseils">Conseils & Articles</h2>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input id="conseil-search" type="text" placeholder="Rechercher un article..." data-i18n-ph="ph.search_conseils" oninput="renderConseils()">
+            <select id="conseil-type" onchange="renderConseils()">
+              <option value="" data-i18n="conseils.type_tous">Tous les types</option>
+              <option value="News" data-i18n="type.news">News</option>
+              <option value="Conseil" data-i18n="type.conseil">Conseil</option>
+            </select>
+          </div>
+        </div>
+        <div id="liste-conseils" class="grid2"><div class="placeholder">Chargement...</div></div>
+      </div>
+
+      <!-- PROFIL -->
+      <div class="screen" id="screen-profil">
+        <div class="page-header"><h2 data-i18n="title.profil">Mon profil</h2></div>
+        <div class="grid2">
+          <div class="card">
+            <div class="card-head"><h3 data-i18n="card.infos_perso">Informations personnelles</h3></div>
+            <div class="card-body">
+              <div class="row2">
+                <div class="field"><label data-i18n="field.prenom">Prénom</label><input id="profil-prenom" type="text"></div>
+                <div class="field"><label data-i18n="field.nom">Nom</label><input id="profil-nom" type="text"></div>
+              </div>
+              <div class="field"><label data-i18n="field.email">Email</label><input id="profil-email" type="email"></div>
+              <button class="btn btn-dark" onclick="saveProfil()" data-i18n="btn.enregistrer">Enregistrer</button>
+              <button class="btn" onclick="startTuto()" data-i18n="btn.revoir_tuto" style="margin-left:8px">Revoir le tutoriel</button>
+            </div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:12px">
+              <div class="card-head"><h3 data-i18n="card.changer_mdp">Changer le mot de passe</h3></div>
+              <div class="card-body">
+                <div class="field"><label data-i18n="field.ancien_mdp">Ancien mot de passe</label><input id="profil-ancien-mdp" type="password" placeholder="••••••••"></div>
+                <div class="field"><label data-i18n="field.nouveau_mdp">Nouveau mot de passe</label><input id="profil-nouveau-mdp" type="password" placeholder="6 caractères minimum" data-i18n-ph="ph.password_min"></div>
+                <button class="btn btn-dark" onclick="changePassword()" data-i18n="btn.modifier">Modifier</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3 data-i18n="card.zone_danger">Zone de danger</h3></div>
+              <div class="card-body">
+                <p style="font-size:12px;color:#888;margin-bottom:12px" data-i18n="profil.danger_text">La suppression de votre compte est définitive et irréversible.</p>
+                <button class="btn btn-red" onclick="deleteAccount()" data-i18n="btn.supprimer_compte">Supprimer mon compte</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORUM -->
+      <div class="screen" id="screen-forum">
+        <div class="page-header">
+          <h2 data-i18n="title.forum">Forum</h2>
+          <button class="btn btn-dark" onclick="openModal('modal-topic')" data-i18n="btn.nouveau_sujet">+ Nouveau sujet</button>
+        </div>
+        <div id="forum-topics"><div class="placeholder">Chargement...</div></div>
+        <div id="forum-thread" style="display:none">
+          <button class="btn btn-sm" onclick="closeTopic()" data-i18n="btn.retour">‹ Retour</button>
+          <h3 id="forum-thread-title" style="margin:10px 0"></h3>
+          <div id="forum-messages"></div>
+          <div class="card" style="margin-top:12px">
+            <div class="card-body">
+              <div class="field"><textarea id="forum-msg" placeholder="Votre message..." data-i18n-ph="ph.votre_message"></textarea></div>
+              <button class="btn btn-dark" onclick="postMessage()" data-i18n="btn.poster">Poster</button>
+            </div>
           </div>
         </div>
       </div>
@@ -200,36 +277,90 @@
 
 <div class="modal-bg" id="modal-annonce" onclick="closeModal('modal-annonce', event)">
   <div class="modal">
-    <div class="modal-head">
-      <h3>Nouvelle annonce</h3>
-      <button onclick="closeModal('modal-annonce', null)">x</button>
-    </div>
+    <div class="modal-head"><h3 data-i18n="modal.nouvelle_annonce">Nouvelle annonce</h3><button onclick="closeModal('modal-annonce', null)">✕</button></div>
     <div class="modal-body">
-      <div class="field"><label>Titre</label><input id="ann-titre" type="text" placeholder="Ex: Chaise en bois massif"></div>
-      <div class="field"><label>Description</label><textarea id="ann-desc" placeholder="Decrivez l'objet..."></textarea></div>
+      <div class="field"><label data-i18n="field.titre">Titre</label><input id="ann-titre" type="text" placeholder="Ex: Chaise en bois massif" data-i18n-ph="ph.ex_chaise_massif"></div>
+      <div class="field"><label data-i18n="field.description">Description</label><textarea id="ann-desc" placeholder="Décrivez l'objet..." data-i18n-ph="ph.decrivez"></textarea></div>
+      <div class="field"><label data-i18n="field.categorie">Catégorie</label><select id="ann-cat"><option>Chargement...</option></select></div>
       <div class="row2">
-        <div class="field"><label>Type</label>
-          <select id="ann-type">
-            <option>Don</option>
-            <option>Vente</option>
-            <option>Service</option>
-          </select>
+        <div class="field"><label data-i18n="field.type">Type</label>
+          <select id="ann-type"><option value="Don" data-i18n="opt.don">Don</option><option value="Vente" data-i18n="opt.vente">Vente</option><option value="Service" data-i18n="opt.service">Service</option></select>
         </div>
-        <div class="field"><label>Prix (0 si don)</label><input id="ann-prix" type="number" placeholder="0" value="0"></div>
+        <div class="field"><label data-i18n="field.prix_don">Prix (0 si don)</label><input id="ann-prix" type="number" placeholder="0" value="0"></div>
       </div>
       <div class="row2">
-        <div class="field"><label>Ville</label><input id="ann-ville" type="text" placeholder="Paris"></div>
-        <div class="field"><label>Code postal</label><input id="ann-cp" type="text" placeholder="75010"></div>
+        <div class="field"><label data-i18n="field.ville">Ville</label><input id="ann-ville" type="text" placeholder="Paris"></div>
+        <div class="field"><label data-i18n="field.code_postal">Code postal</label><input id="ann-cp" type="text" placeholder="75010"></div>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn" onclick="closeModal('modal-annonce', null)">Annuler</button>
-      <button class="btn btn-dark" onclick="createAnnonce()">Publier</button>
+      <button class="btn" onclick="closeModal('modal-annonce', null)" data-i18n="btn.annuler">Annuler</button>
+      <button class="btn btn-dark" onclick="createAnnonce()" data-i18n="btn.publier">Publier</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-edit-annonce" onclick="closeModal('modal-edit-annonce', event)">
+  <div class="modal">
+    <div class="modal-head"><h3 data-i18n="modal.modifier_annonce">Modifier l'annonce</h3><button onclick="closeModal('modal-edit-annonce', null)">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label data-i18n="field.titre">Titre</label><input id="edit-ann-titre" type="text"></div>
+      <div class="field"><label data-i18n="field.description">Description</label><textarea id="edit-ann-desc"></textarea></div>
+      <div class="row2">
+        <div class="field"><label data-i18n="field.type">Type</label>
+          <select id="edit-ann-type"><option value="Don" data-i18n="opt.don">Don</option><option value="Vente" data-i18n="opt.vente">Vente</option><option value="Service" data-i18n="opt.service">Service</option></select>
+        </div>
+        <div class="field"><label data-i18n="field.prix">Prix</label><input id="edit-ann-prix" type="number"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('modal-edit-annonce', null)" data-i18n="btn.annuler">Annuler</button>
+      <button id="edit-ann-save" class="btn btn-dark" data-i18n="btn.enregistrer">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-article" onclick="closeModal('modal-article', event)">
+  <div class="modal">
+    <div class="modal-head"><h3 id="article-titre"></h3><button onclick="closeModal('modal-article', null)">✕</button></div>
+    <div class="modal-body">
+      <div class="meta" style="margin-bottom:10px"><span class="badge badge-wait" id="article-type"></span> · <span id="article-auteur"></span></div>
+      <p id="article-contenu" style="white-space:pre-wrap;line-height:1.6;color:#333;margin:0"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-dark" onclick="closeModal('modal-article', null)" data-i18n="btn.fermer">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-topic" onclick="closeModal('modal-topic', event)">
+  <div class="modal">
+    <div class="modal-head"><h3 data-i18n="modal.nouveau_sujet">Nouveau sujet</h3><button onclick="closeModal('modal-topic', null)">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label data-i18n="field.titre">Titre</label><input id="topic-titre" type="text" placeholder="Sujet de discussion..." data-i18n-ph="ph.sujet" onkeydown="if(event.key==='Enter')createTopic()"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal('modal-topic', null)" data-i18n="btn.annuler">Annuler</button>
+      <button class="btn btn-dark" onclick="createTopic()" data-i18n="btn.creer">Créer</button>
     </div>
   </div>
 </div>
 
 <div id="toast"></div>
+<!-- TUTORIEL FIRST-LOGIN (overlay bloquant) -->
+<div id="tuto-overlay" class="tuto-overlay" style="display:none">
+  <div class="tuto-box">
+    <div id="tuto-content"></div>
+    <div class="tuto-dots" id="tuto-dots"></div>
+    <div class="tuto-actions">
+      <button class="btn btn-sm" onclick="tutoSkip()">Passer</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-sm" id="tuto-prev" onclick="tutoPrev()">Précédent</button>
+      <button class="btn btn-sm btn-dark" id="tuto-next" onclick="tutoNext()">Suivant</button>
+    </div>
+  </div>
+</div>
+
 <script src="particulier.js"></script>
 </body>
 </html>

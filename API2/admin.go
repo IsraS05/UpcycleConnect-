@@ -8,18 +8,20 @@ import (
 )
 
 func Health(w http.ResponseWriter, r *http.Request) {
-	err := bdd.Db.Ping()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Fprintln(w, "ping à la bdd")
+	if err := bdd.Db.Ping(); err != nil { panic(err) }
+	fmt.Fprintln(w, "ok")
 }
 
 func main() {
 	bdd.Db = bdd.NewDB()
 	http.HandleFunc("GET /{$}", Health)
 
-	// Login
+	// Swagger
+	http.HandleFunc("GET /swagger", serveSwagger)
+	http.HandleFunc("GET /swagger/", serveSwagger)
+	http.HandleFunc("GET /swagger/openapi.yaml", serveOpenAPI)
+
+	// Auth
 	http.HandleFunc("POST /login", admin.Login)
 	http.HandleFunc("OPTIONS /login", admin.Login)
 
@@ -99,15 +101,39 @@ func main() {
 	http.HandleFunc("DELETE /admin/plans/delete/{id}", admin.DeletePlan)
 	http.HandleFunc("OPTIONS /admin/plans/delete/{id}", admin.DeletePlan)
 
+	// Articles
+	http.HandleFunc("GET /admin/articles", admin.GetArticlesHandler)
+
 	//PARTICULIER
 	http.HandleFunc("POST /particulier/annonces/add", admin.CreateAnnonceParticulier)
 	http.HandleFunc("OPTIONS /particulier/annonces/add", admin.CreateAnnonceParticulier)
+	http.HandleFunc("PUT /particulier/annonces/modify/{id}", admin.UpdateAnnonceParticulier)
+	http.HandleFunc("OPTIONS /particulier/annonces/modify/{id}", admin.UpdateAnnonceParticulier)
+	http.HandleFunc("DELETE /particulier/annonces/delete/{id}", admin.DeleteAnnonceParticulier)
+	http.HandleFunc("OPTIONS /particulier/annonces/delete/{id}", admin.DeleteAnnonceParticulier)
 	http.HandleFunc("POST /particulier/depot", admin.CreateDepotParticulier)
 	http.HandleFunc("OPTIONS /particulier/depot", admin.CreateDepotParticulier)
+	http.HandleFunc("GET /particulier/depots/{idUser}", admin.GetDepotsUser)
 	http.HandleFunc("POST /particulier/inscription/{idEvent}", admin.CreateInscription)
 	http.HandleFunc("OPTIONS /particulier/inscription/{idEvent}", admin.CreateInscription)
+	http.HandleFunc("DELETE /particulier/inscription/{idEvent}/{idUser}", admin.DeleteInscriptionHandler)
+	http.HandleFunc("OPTIONS /particulier/inscription/{idEvent}/{idUser}", admin.DeleteInscriptionHandler)
 	http.HandleFunc("GET /particulier/planning/{idUser}", admin.GetPlanning)
-	http.HandleFunc("GET /particulier/depots/{idUser}", admin.GetDepotsUser)
+	http.HandleFunc("PUT /particulier/password/{idUser}", admin.ChangePasswordHandler)
+	http.HandleFunc("OPTIONS /particulier/password/{idUser}", admin.ChangePasswordHandler)
+
+	// Tutoriel + multilingue
+	http.HandleFunc("PUT /particulier/tutoriel/{idUser}", admin.MarkTutorielHandler)
+	http.HandleFunc("OPTIONS /particulier/tutoriel/{idUser}", admin.MarkTutorielHandler)
+	http.HandleFunc("GET /dictionnaire/{langue}", admin.GetDictionnaireHandler)
+
+	// Forum
+	http.HandleFunc("GET /forum/topics", admin.GetTopicsHandler)
+	http.HandleFunc("POST /forum/topics", admin.CreateTopicHandler)
+	http.HandleFunc("OPTIONS /forum/topics", admin.CreateTopicHandler)
+	http.HandleFunc("GET /forum/topics/{idTopic}/messages", admin.GetMessagesHandler)
+	http.HandleFunc("POST /forum/topics/{idTopic}/messages", admin.CreateMessageHandler)
+	http.HandleFunc("OPTIONS /forum/topics/{idTopic}/messages", admin.CreateMessageHandler)
 
 	// --- Conseils & News ---
 	http.HandleFunc("GET /admin/conseils", admin.GetAllConseils)
@@ -138,5 +164,6 @@ func main() {
 	http.HandleFunc("OPTIONS /salarie/formations/add", admin.CreateFormationSalarie)
 
 	fmt.Println("Serveur lancé sur : http://localhost:8081")
+	fmt.Println("Swagger UI      : http://localhost:8081/swagger")
 	http.ListenAndServe(":8081", nil)
 }

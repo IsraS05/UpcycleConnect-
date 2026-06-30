@@ -91,10 +91,26 @@ func DeleteUser(id int) error {
 }
 
 func UpdateUserById(u models.User) error {
-	result, err := Db.Exec(
-		"UPDATE pa2026.utilisateur SET role = ?, nom = ?, prenom = ?, email = ?, mot_de_passe = ?, type_statut = ?, nom_entreprise = ?, siret = ? WHERE id_user = ?",
-		u.Role, u.Nom, u.Prenom, u.Email, u.MotDePasse, u.TypeStatut, u.NomEntreprise, u.Siret, u.Id,
-	)
+	var result sql.Result
+	var err error
+
+	if u.MotDePasse != "" {
+		// Nouveau mot de passe fourni → on le hash avant de l'enregistrer
+		hash, e := bcrypt.GenerateFromPassword([]byte(u.MotDePasse), bcrypt.DefaultCost)
+		if e != nil {
+			return fmt.Errorf("hash mot de passe : %v", e)
+		}
+		result, err = Db.Exec(
+			"UPDATE pa2026.utilisateur SET role=?, nom=?, prenom=?, email=?, mot_de_passe=?, type_statut=?, nom_entreprise=?, siret=? WHERE id_user=?",
+			u.Role, u.Nom, u.Prenom, u.Email, string(hash), u.TypeStatut, u.NomEntreprise, u.Siret, u.Id,
+		)
+	} else {
+		// Pas de mot de passe → on met à jour les autres champs uniquement
+		result, err = Db.Exec(
+			"UPDATE pa2026.utilisateur SET role=?, nom=?, prenom=?, email=?, type_statut=?, nom_entreprise=?, siret=? WHERE id_user=?",
+			u.Role, u.Nom, u.Prenom, u.Email, u.TypeStatut, u.NomEntreprise, u.Siret, u.Id,
+		)
+	}
 	if err != nil {
 		return fmt.Errorf("UpdateUser : %v", err)
 	}
