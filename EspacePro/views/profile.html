@@ -1,0 +1,183 @@
+<div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-2">
+  <div>
+    <h1 class="mb-1" style="font-size:1.6rem">Profil Entreprise</h1>
+    <p class="text-muted mb-0" style="font-size:.8rem">Informations légales · Documents justificatifs · Coordonnées</p>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-sm btn-outline-secondary" id="btn-discard"
+            onclick="ProModules.profile.discardChanges()" style="display:none">Annuler</button>
+    <button class="btn btn-sm fw-bold" id="btn-save-profile"
+            style="background:var(--uc-vf);color:#fff" onclick="ProModules.profile.saveProfile()">
+      <i class="bi bi-floppy me-1"></i>
+      <span id="save-label">Enregistrer</span>
+      <span class="spinner-border spinner-border-sm ms-1" id="save-spinner" style="display:none" role="status"></span>
+    </button>
+  </div>
+</div>
+<div class="row g-3">
+  <div class="col-12 col-lg-7">
+    <div class="pro-card mb-3">
+      <div class="pro-card-title"><i class="bi bi-building me-2"></i>Identité de l'entreprise</div>
+      <div class="row g-3">
+        <div class="col-12 col-sm-6">
+          <label class="form-label form-label-sm">Raison sociale *</label>
+          <input type="text" class="form-control form-control-sm profile-field" id="field-raison-sociale" data-field="raison_sociale" placeholder="Atelier Marchand SAS">
+        </div>
+        <div class="col-12 col-sm-6">
+          <label class="form-label form-label-sm">Forme juridique</label>
+          <select class="form-select form-select-sm profile-field" id="field-forme-juridique" data-field="forme_juridique">
+            <option value="">Sélectionner…</option>
+            <option value="EI">EI — Entrepreneur individuel</option>
+            <option value="EIRL">EIRL</option>
+            <option value="EURL">EURL</option>
+            <option value="SARL">SARL</option>
+            <option value="SAS">SAS</option>
+            <option value="SASU">SASU</option>
+            <option value="AUTO">Auto-entrepreneur</option>
+          </select>
+        </div>
+        <div class="col-12 col-sm-6">
+          <label class="form-label form-label-sm">N° SIRET *</label>
+          <input type="text" class="form-control form-control-sm profile-field" id="field-siret" data-field="siret" placeholder="84512367800024" maxlength="14" oninput="ProModules.profile.validateSiret(this)">
+          <div class="form-text" id="siret-feedback"></div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <label class="form-label form-label-sm">Secteur d'activité</label>
+          <select class="form-select form-select-sm profile-field" id="field-secteur" data-field="secteur_activite">
+            <option value="">Sélectionner…</option>
+            <option value="menuiserie">Menuiserie / Ébénisterie</option>
+            <option value="ferronnerie">Ferronnerie / Métallurgie</option>
+            <option value="couture">Couture / Textile</option>
+            <option value="ceramique">Céramique / Poterie</option>
+            <option value="decoration">Décoration intérieure</option>
+            <option value="art">Art / Artisanat créatif</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label form-label-sm">Site web</label>
+          <div class="input-group input-group-sm">
+            <span class="input-group-text">https://</span>
+            <input type="text" class="form-control profile-field" id="field-site-web" data-field="site_web" placeholder="mon-atelier.fr">
+          </div>
+        </div>
+        <div class="col-12">
+          <label class="form-label form-label-sm">Description de l'activité</label>
+          <textarea class="form-control form-control-sm profile-field" rows="3" id="field-description" data-field="description" placeholder="Décrivez votre activité d'upcycling…" oninput="ProModules.profile.countChars(this,'desc-count',500)"></textarea>
+          <div class="d-flex justify-content-end"><span class="form-text" id="desc-count">0 / 500</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="pro-card mb-3">
+      <div class="pro-card-title"><i class="bi bi-geo-alt me-2"></i>Coordonnées</div>
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label form-label-sm">Adresse *</label>
+          <input type="text" class="form-control form-control-sm profile-field" id="field-adresse" data-field="adresse" placeholder="12 rue de la Forge">
+        </div>
+        <div class="col-4">
+          <label class="form-label form-label-sm">Code postal</label>
+          <input type="text" class="form-control form-control-sm profile-field" id="field-cp" data-field="code_postal" placeholder="75011" maxlength="5">
+        </div>
+        <div class="col-8">
+          <label class="form-label form-label-sm">Ville</label>
+          <input type="text" class="form-control form-control-sm profile-field" id="field-ville" data-field="ville" placeholder="Paris">
+        </div>
+        <div class="col-12 col-sm-6">
+          <label class="form-label form-label-sm">Téléphone professionnel</label>
+          <input type="tel" class="form-control form-control-sm profile-field" id="field-tel" data-field="telephone" placeholder="+33 1 23 45 67 89">
+        </div>
+        <div class="col-12 col-sm-6">
+          <label class="form-label form-label-sm">Email professionnel *</label>
+          <input type="email" class="form-control form-control-sm profile-field" id="field-email" data-field="email_pro" placeholder="contact@monatelier.fr">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-5">
+    <div class="pro-card mb-3" id="verification-card">
+      <div class="pro-card-title"><i class="bi bi-shield-check me-2" style="color:var(--uc-vc)"></i>Statut de vérification</div>
+      <div id="verification-status"><div class="text-center py-3"><div class="spinner-border spinner-border-sm text-success" role="status"></div></div></div>
+    </div>
+    <div class="pro-card mb-3">
+      <div class="pro-card-title"><i class="bi bi-file-earmark-lock me-2" style="color:var(--uc-vc)"></i>Documents légaux</div>
+      <p class="text-muted mb-3" style="font-size:.75rem">Formats : PDF, JPG, PNG · Max 5 Mo</p>
+      <div id="documents-list"><div class="text-center py-3"><div class="spinner-border spinner-border-sm text-success" role="status"></div></div></div>
+      <div class="mt-3">
+        <div id="drop-zone" class="rounded-3 text-center p-4"
+             style="border:2px dashed var(--uc-bs);cursor:pointer;transition:all .15s"
+             onclick="document.getElementById('file-upload-input').click()"
+             ondragover="ProModules.profile.onDragOver(event)"
+             ondragleave="ProModules.profile.onDragLeave(event)"
+             ondrop="ProModules.profile.onDrop(event)">
+          <div style="font-size:2rem;color:var(--uc-gl)">📎</div>
+          <div style="font-size:.78rem;font-weight:600;color:var(--uc-gm);margin-top:.3rem">Glissez un fichier ou cliquez</div>
+          <div style="font-size:.65rem;color:var(--uc-gl);margin-top:.2rem">KBIS, assurance, carte artisan…</div>
+        </div>
+        <div class="row g-2 mt-2">
+          <div class="col-8">
+            <select class="form-select form-select-sm" id="doc-type-select">
+              <option value="kbis">Extrait KBIS</option>
+              <option value="assurance">Attestation assurance</option>
+              <option value="carte_artisan">Carte artisan</option>
+              <option value="rib">RIB bancaire</option>
+              <option value="autre">Autre document</option>
+            </select>
+          </div>
+          <div class="col-4">
+            <button class="btn btn-sm w-100 rounded-3" style="background:var(--uc-vf);color:#fff;font-weight:600"
+                    onclick="document.getElementById('file-upload-input').click()">
+              <i class="bi bi-upload me-1"></i>Upload
+            </button>
+          </div>
+        </div>
+        <input type="file" id="file-upload-input" style="display:none" accept=".pdf,.jpg,.jpeg,.png"
+               onchange="ProModules.profile.handleFileSelect(this)">
+        <div id="upload-progress" style="display:none;margin-top:.75rem">
+          <div class="d-flex justify-content-between mb-1">
+            <span style="font-size:.7rem;color:var(--uc-gm)" id="upload-filename">–</span>
+            <span style="font-size:.7rem;font-family:var(--uc-mono);color:var(--uc-gm)" id="upload-pct">0%</span>
+          </div>
+          <div style="height:6px;background:var(--uc-gxl);border-radius:3px;overflow:hidden">
+            <div id="upload-bar" style="height:100%;background:var(--uc-vc);border-radius:3px;width:0%;transition:width .3s ease"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pro-card">
+      <div class="pro-card-title"><i class="bi bi-bell me-2"></i>Préférences notifications</div>
+      <div class="notif-pref-row">
+        <div><div style="font-size:.8rem;font-weight:600;color:var(--uc-gc)">Conteneur plein à proximité</div><div style="font-size:.7rem;color:var(--uc-gm)">Push + email</div></div>
+        <div class="form-check form-switch mb-0"><input class="form-check-input profile-field" type="checkbox" id="notif-conteneur" data-field="notif_conteneur" checked></div>
+      </div>
+      <div class="notif-pref-row">
+        <div><div style="font-size:.8rem;font-weight:600;color:var(--uc-gc)">Nouvelle annonce matching mes matériaux</div><div style="font-size:.7rem;color:var(--uc-gm)">Push uniquement</div></div>
+        <div class="form-check form-switch mb-0"><input class="form-check-input profile-field" type="checkbox" id="notif-annonce" data-field="notif_annonce" checked></div>
+      </div>
+      <div class="notif-pref-row">
+        <div><div style="font-size:.8rem;font-weight:600;color:var(--uc-gc)">Rappel projet en retard</div><div style="font-size:.7rem;color:var(--uc-gm)">Email uniquement</div></div>
+        <div class="form-check form-switch mb-0"><input class="form-check-input profile-field" type="checkbox" id="notif-projet" data-field="notif_projet" checked></div>
+      </div>
+      <div class="notif-pref-row" style="border-bottom:none">
+        <div><div style="font-size:.8rem;font-weight:600;color:var(--uc-gc)">Récapitulatif hebdomadaire d'impact</div><div style="font-size:.7rem;color:var(--uc-gm)">Email tous les lundis</div></div>
+        <div class="form-check form-switch mb-0"><input class="form-check-input profile-field" type="checkbox" id="notif-recap" data-field="notif_recap"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  .form-label-sm{font-size:.72rem;font-weight:600;color:var(--uc-gc);margin-bottom:.3rem;}
+  .profile-field.dirty{border-color:var(--uc-vc);}
+  .verif-item{display:flex;align-items:center;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--uc-gxl);}
+  .verif-item:last-child{border-bottom:none;}
+  .verif-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem;}
+  .doc-item{display:flex;align-items:center;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--uc-gxl);}
+  .doc-item:last-child{border-bottom:none;}
+  .doc-status{font-size:.58rem;font-family:var(--uc-mono);font-weight:700;padding:.12rem .4rem;border-radius:5px;text-transform:uppercase;}
+  .ds-ok{background:var(--uc-vxl);color:var(--uc-vm);}
+  .ds-pending{background:#FFF7E6;color:#92400E;}
+  .ds-missing{background:var(--uc-trl);color:var(--uc-tr);}
+  .notif-pref-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.65rem 0;border-bottom:1px solid var(--uc-gxl);}
+  .notif-pref-row .form-check-input:checked{background-color:var(--uc-vf);border-color:var(--uc-vf);}
+  .drop-zone-active{border-color:var(--uc-vc)!important;background:var(--uc-vxl)!important;}
+</style>
