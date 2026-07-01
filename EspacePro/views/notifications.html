@@ -1,0 +1,82 @@
+<!--
+  notifications.html — UpcycleConnect Espace Pro
+  Vue Notifications
+  Injectée dans #pro-view par router.js
+  Le JS est dans notifications.js (chargé par le router)
+-->
+
+<!-- ══ EN-TÊTE ══ -->
+<div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-2">
+  <div>
+    <h1 class="mb-1" style="font-size:1.6rem">
+      <i class="bi bi-bell me-2" style="color:var(--uc-vc)"></i>Notifications
+    </h1>
+    <p class="text-muted mb-0" style="font-size:.8rem">
+      Alertes conteneurs, mises à jour projets et informations compte
+    </p>
+  </div>
+  <button class="btn btn-sm btn-outline-secondary"
+          id="btn-mark-all-read">
+    <i class="bi bi-check2-all me-1"></i>Tout marquer lu
+  </button>
+</div>
+
+<!-- ══ FILTRES ══ -->
+<div class="d-flex gap-2 flex-wrap mb-4">
+
+  <button class="btn btn-sm notif-filter-btn active"
+          data-filter="all"
+          onclick="ProModules.notifications.filterBy('all', this)"
+          style="border-radius:20px;border:1px solid var(--uc-bs);background:#fff;
+                 font-size:.75rem;font-weight:600">
+    Toutes
+    <span class="ms-1 badge rounded-pill"
+          style="background:var(--uc-vxl);color:var(--uc-vf);font-size:.6rem"
+          id="notif-count-all">–</span>
+  </button>
+
+  <button class="btn btn-sm notif-filter-btn"
+          data-filter="unread"
+          onclick="ProModules.notifications.filterBy('unread', this)"
+          style="border-radius:20px;border:1px solid var(--uc-bs);background:#fff;
+                 font-size:.75rem;font-weight:600">
+    <span style="color:var(--uc-vc)">●</span> Non lues
+    <span class="ms-1 badge rounded-pill"
+          style="background:var(--uc-vxl);color:var(--uc-vf);font-size:.6rem"
+          id="notif-count-unread">–</span>
+  </button>
+
+  <button class="btn btn-sm notif-filter-btn"
+          data-filter="urgente"
+          onclick="ProModules.notifications.filterBy('urgente', this)"
+          style="border-radius:20px;border:1px solid var(--uc-bs);background:#fff;
+                 font-size:.75rem;font-weight:600">
+    <span style="color:var(--uc-tr)">●</span> Urgentes
+    <span class="ms-1 badge rounded-pill"
+          style="background:#FFF5F2;color:var(--uc-tr);font-size:.6rem"
+          id="notif-count-urgente">–</span>
+  </button>
+
+  <button class="btn btn-sm notif-filter-btn"
+          data-filter="info"
+          onclick="ProModules.notifications.filterBy('info', this)"
+          style="border-radius:20px;border:1px solid var(--uc-bs);background:#fff;
+                 font-size:.75rem;font-weight:600">
+    <i class="bi bi-info-circle me-1" style="color:var(--uc-vc)"></i>Infos
+    <span class="ms-1 badge rounded-pill"
+          style="background:var(--uc-vxl);color:var(--uc-vm);font-size:.6rem"
+          id="notif-count-info">–</span>
+  </button>
+
+</div>
+
+<!-- ══ LISTE ══ -->
+<div id="notif-list">
+  <!-- Spinner initial — remplacé par notifications.js -->
+  <div class="text-center py-5">
+    <div class="spinner-border text-success" role="status">
+      <span class="visually-hidden">Chargement…</span>
+    </div>
+    <div class="mt-2 text-muted small">Chargement des notifications…</div>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<!--
+  project-editor.html — UpcycleConnect Espace Pro
+  Module D — Tasks 53-55 : Éditeur projet multi-étapes + calcul impact carbone
+  Injectée dans #pro-view par router.js
+-->
+
+<!-- ══ EN-TÊTE ══ -->
+<div class="d-flex align-items-center gap-3 mb-4">
+  <a href="#/projects" class="btn btn-sm btn-outline-secondary rounded-3">
+    <i class="bi bi-arrow-left"></i>
+  </a>
+  <div>
+    <h1 class="mb-0" style="font-size:1.5rem" id="editor-title">Nouveau Projet</h1>
+    <p class="text-muted mb-0" style="font-size:.78rem" id="editor-subtitle">
+      Remplissez les étapes ci-dessous
+    </p>
+  </div>
+</div>
+
+<!-- ══ STEPPER ══ -->
+<div class="pro-card p-3 mb-4">
+  <div class="d-flex align-items-center" id="stepper">
+    <!-- Injecté par project-editor.js -->
+  </div>
+</div>
+
+<!-- ══ CONTENU ÉTAPES ══ -->
+<div id="step-content">
+  <div class="text-center py-5">
+    <div class="spinner-border text-success" role="status"></div>
+  </div>
+</div>
+
+<!-- ══ NAVIGATION ÉTAPES ══ -->
+<div class="d-flex justify-content-between align-items-center mt-4 pt-3"
+     style="border-top:1px solid var(--uc-bs)">
+  <button class="btn btn-outline-secondary rounded-3" id="btn-prev"
+          onclick="ProModules.projectEditor.prevStep()" style="display:none">
+    <i class="bi bi-arrow-left me-1"></i>Étape précédente
+  </button>
+  <div class="ms-auto d-flex gap-2">
+    <a href="#/projects" class="btn btn-outline-secondary rounded-3">Annuler</a>
+    <button class="btn rounded-3 fw-bold" id="btn-next"
+            style="background:var(--uc-vf);color:#fff;min-width:140px"
+            onclick="ProModules.projectEditor.nextStep()">
+      <span id="btn-next-label">Étape suivante</span>
+      <i class="bi bi-arrow-right ms-1" id="btn-next-icon"></i>
+      <span class="spinner-border spinner-border-sm ms-1" id="btn-next-spinner"
+            style="display:none" role="status"></span>
+    </button>
+  </div>
+</div>
+
+<style>
+  /* Stepper */
+  .step-item-wrap {
+    display:flex;flex-direction:column;align-items:center;flex:1;position:relative;
+  }
+  .step-item-wrap:not(:last-child)::after {
+    content:'';position:absolute;top:16px;left:50%;width:100%;height:2px;z-index:0;
+    transition:background .3s;
+  }
+  .step-item-wrap.completed:not(:last-child)::after { background:var(--uc-vc); }
+  .step-item-wrap.active:not(:last-child)::after    { background:var(--uc-gl); }
+  .step-item-wrap.pending:not(:last-child)::after   { background:var(--uc-gl); }
+  .step-num {
+    width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-size:.78rem;font-weight:700;z-index:1;position:relative;
+    transition:all .2s;
+  }
+  .step-num.completed { background:var(--uc-vc);color:#fff; }
+  .step-num.active    { background:var(--uc-vf);color:#fff;box-shadow:0 0 0 4px var(--uc-vl); }
+  .step-num.pending   { background:#fff;color:var(--uc-gl);border:2px solid var(--uc-gl); }
+  .step-title {
+    font-size:.6rem;font-family:var(--uc-mono);color:var(--uc-gm);
+    margin-top:.35rem;text-align:center;text-transform:uppercase;letter-spacing:.07em;
+  }
+  .step-title.active { color:var(--uc-vf);font-weight:700; }
+
+  /* Step content panels */
+  .step-panel { animation:fadeInUp .2s ease; }
+  @keyframes fadeInUp {
+    from { opacity:0;transform:translateY(8px); }
+    to   { opacity:1;transform:translateY(0); }
+  }
+  .form-section-label {
+    font-family:var(--uc-mono);font-size:.6rem;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--uc-gm);margin-bottom:.75rem;
+    padding-bottom:.4rem;border-bottom:1px solid var(--uc-gxl);
+  }
+
+  /* Impact preview card */
+  .impact-preview-card {
+    background:var(--uc-vxl);border-radius:16px;padding:1.25rem;
+  }
+  .impact-big-num {
+    font-family:var(--uc-fd);font-size:2.5rem;font-weight:700;
+    color:var(--uc-vf);line-height:1;
+  }
+
+  /* Material selector */
+  .mat-selector {
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:.5rem;
+  }
+  .mat-option {
+    border:2px solid var(--uc-bs);border-radius:10px;padding:.6rem .4rem;
+    text-align:center;cursor:pointer;transition:all .12s;background:#fff;
+  }
+  .mat-option:hover  { border-color:var(--uc-vc); }
+  .mat-option.selected { border-color:var(--uc-vf);background:var(--uc-vxl); }
+  .mat-option .mat-emoji { font-size:1.5rem;display:block;margin-bottom:.2rem; }
+  .mat-option .mat-label { font-size:.65rem;font-family:var(--uc-mono);font-weight:700;
+                            color:var(--uc-gc);text-transform:uppercase; }
+
+  /* Étape 3 — Timeline visuelle projet */
+  .project-step-row {
+    display:flex;align-items:flex-start;gap:1rem;padding:1rem 0;
+    border-bottom:1px solid var(--uc-gxl);
+  }
+  .project-step-row:last-child { border-bottom:none; }
+  .project-step-dot {
+    width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;flex-shrink:0;font-size:.9rem;
+  }
+</style>

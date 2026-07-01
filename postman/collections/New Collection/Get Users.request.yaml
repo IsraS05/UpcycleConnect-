@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get Users
+url: http://localhost:808/admin/users
+method: GET
+order: 1778591482838

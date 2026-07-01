@@ -1,0 +1,9 @@
+$kind: http-request
+name: Test Token
+url: http://localhost:8081/api/pro/dashboard/kpis
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInJvbGUiOiJQcm8iLCJpc19wcmVtaXVtIjpmYWxzZSwibm9tIjoiVEVSUkEiLCJwcmVub20iOiJBdGVsaWVyIiwiZW1haWwiOiJjb250YWN0QGF0ZWxpZXItdGVycmEuZnIiLCJpc3MiOiJ1cGN5Y2xlY29ubmVjdCIsImV4cCI6MTc3ODc1MzYwOCwiaWF0IjoxNzc4NjY3MjA4fQ.0YXrLkOR1U2tw4_6zoWvLVPAIpedM9t__Id_8OkVKHg
+order: 1937215363461089

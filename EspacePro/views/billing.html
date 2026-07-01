@@ -1,0 +1,399 @@
+<!--
+  billing.html — UpcycleConnect Espace Pro
+  Module B — Tasks 43-44 : Liste factures + téléchargement PDF
+  Injectée dans #pro-view par router.js
+-->
+
+<!-- ══ EN-TÊTE ══ -->
+<div
+  class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-2"
+>
+  <div>
+    <h1 class="mb-1" style="font-size: 1.6rem">Factures & Paiements</h1>
+    <p class="text-muted mb-0" style="font-size: 0.8rem">
+      Historique complet de vos paiements · Téléchargement PDF disponible
+    </p>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <button
+      class="btn btn-sm btn-outline-secondary"
+      onclick="ProModules.billing.exportAll()"
+    >
+      <i class="bi bi-download me-1"></i>Tout exporter
+    </button>
+    <a
+      href="#/subscription"
+      class="btn btn-sm"
+      style="background: var(--uc-vf); color: #fff; font-weight: 600"
+    >
+      <i class="bi bi-stars me-1"></i>Gérer l'abonnement
+    </a>
+  </div>
+</div>
+
+<!-- ══ RÉSUMÉ PAIEMENTS ══ -->
+<div class="row g-3 mb-4" id="billing-summary">
+  <!-- Injecté par billing.js -->
+  <div class="col-12 text-center py-3">
+    <div class="spinner-border text-success" role="status"></div>
+  </div>
+</div>
+
+<!-- ══ FILTRES ══ -->
+<div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+  <span
+    style="
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--uc-gm);
+      font-family: var(--uc-mono);
+    "
+  >
+    FILTRER :
+  </span>
+  <button
+    class="btn btn-sm billing-filter-btn active"
+    data-filter="all"
+    onclick="ProModules.billing.filterInvoices('all', this)"
+  >
+    Toutes
+  </button>
+  <button
+    class="btn btn-sm billing-filter-btn"
+    data-filter="paid"
+    onclick="ProModules.billing.filterInvoices('paid', this)"
+  >
+    <i class="bi bi-check-circle text-success me-1"></i>Payées
+  </button>
+  <button
+    class="btn btn-sm billing-filter-btn"
+    data-filter="pending"
+    onclick="ProModules.billing.filterInvoices('pending', this)"
+  >
+    <i class="bi bi-clock text-warning me-1"></i>En attente
+  </button>
+  <button
+    class="btn btn-sm billing-filter-btn"
+    data-filter="failed"
+    onclick="ProModules.billing.filterInvoices('failed', this)"
+  >
+    <i class="bi bi-x-circle text-danger me-1"></i>Échouées
+  </button>
+
+  <!-- Filtre année -->
+  <div class="ms-auto">
+    <select
+      class="form-select form-select-sm rounded-pill"
+      style="font-size: 0.72rem; border-color: var(--uc-bs)"
+      id="year-filter"
+      onchange="ProModules.billing.filterByYear(this.value)"
+    >
+      <option value="all">Toutes les années</option>
+      <option value="2026" selected>2026</option>
+      <option value="2025">2025</option>
+    </select>
+  </div>
+</div>
+
+<!-- ══ TABLE FACTURES ══ -->
+<div class="pro-card p-0 overflow-hidden">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0" id="invoices-table">
+      <thead>
+        <tr
+          style="
+            background: var(--uc-gxl);
+            border-bottom: 2px solid var(--uc-bs);
+          "
+        >
+          <th
+            style="
+              font-family: var(--uc-mono);
+              font-size: 0.6rem;
+              letter-spacing: 0.1em;
+              font-weight: 700;
+              color: var(--uc-gm);
+              padding: 0.75rem 1.25rem;
+              text-transform: uppercase;
+              border: none;
+            "
+          >
+            N° Facture
+          </th>
+          <th
+            style="
+              font-family: var(--uc-mono);
+              font-size: 0.6rem;
+              letter-spacing: 0.1em;
+              font-weight: 700;
+              color: var(--uc-gm);
+              padding: 0.75rem 1rem;
+              text-transform: uppercase;
+              border: none;
+            "
+          >
+            Date
+          </th>
+          <th
+            style="
+              font-family: var(--uc-mono);
+              font-size: 0.6rem;
+              letter-spacing: 0.1em;
+              font-weight: 700;
+              color: var(--uc-gm);
+              padding: 0.75rem 1rem;
+              text-transform: uppercase;
+              border: none;
+            "
+          >
+            Description
+          </th>
+          <th
+            style="
+              font-family: var(--uc-mono);
+              font-size: 0.6rem;
+              letter-spacing: 0.1em;
+              font-weight: 700;
+              color: var(--uc-gm);
+              padding: 0.75rem 1rem;
+              text-transform: uppercase;
+              border: none;
+            "
+          >
+            Montant TTC
+          </th>
+          <th
+            style="
+              font-family: var(--uc-mono);
+              font-size: 0.6rem;
+              letter-spacing: 0.1em;
+              font-weight: 700;
+              color: var(--uc-gm);
+              padding: 0.75rem 1rem;
+              text-transform: uppercase;
+              border: none;
+            "
+          >
+            Statut
+          </th>
+          <th
+            style="
+              font-family: var(--uc-mono);
+              font-size: 0.6rem;
+              letter-spacing: 0.1em;
+              font-weight: 700;
+              color: var(--uc-gm);
+              padding: 0.75rem 1.25rem;
+              text-transform: uppercase;
+              border: none;
+              text-align: right;
+            "
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody id="invoices-tbody">
+        <tr>
+          <td colspan="6" class="text-center py-4">
+            <div
+              class="spinner-border spinner-border-sm text-success"
+              role="status"
+            ></div>
+            <div class="text-muted small mt-2">Chargement des factures…</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pagination -->
+<div class="d-flex justify-content-between align-items-center mt-3">
+  <span
+    id="invoice-count-label"
+    style="font-size: 0.72rem; color: var(--uc-gm); font-family: var(--uc-mono)"
+    >–</span
+  >
+  <div class="d-flex gap-1" id="pagination-btns"></div>
+</div>
+
+<!-- ══ MODAL APERÇU FACTURE ══ -->
+<div
+  class="modal fade"
+  id="modal-invoice-preview"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
+  >
+    <div class="modal-content border-0 rounded-4">
+      <div
+        class="modal-header border-0 pb-0"
+        style="background: var(--uc-vf); border-radius: 16px 16px 0 0"
+      >
+        <h5 class="modal-title text-white d-flex align-items-center gap-2">
+          <i class="bi bi-file-earmark-text"></i>
+          <span id="preview-invoice-number">Facture</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      <div class="modal-body p-0" id="invoice-preview-body">
+        <!-- Injecté par billing.js -->
+      </div>
+
+      <div class="modal-footer border-0 gap-2">
+        <button
+          type="button"
+          class="btn btn-outline-secondary rounded-3"
+          data-bs-dismiss="modal"
+        >
+          Fermer
+        </button>
+        <button
+          type="button"
+          class="btn rounded-3"
+          style="background: var(--uc-vf); color: #fff; font-weight: 700"
+          id="btn-download-pdf"
+          onclick="ProModules.billing.downloadCurrentPdf()"
+        >
+          <i class="bi bi-download me-1"></i>Télécharger PDF
+          <span
+            id="pdf-spinner"
+            class="spinner-border spinner-border-sm ms-1"
+            style="display: none"
+            role="status"
+          ></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Filtres factures */
+  .billing-filter-btn {
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    border: 1.5px solid var(--uc-bs);
+    background: #fff;
+    color: var(--uc-gm);
+    transition: all 0.12s;
+  }
+  .billing-filter-btn:hover {
+    border-color: var(--uc-vc);
+    color: var(--uc-vm);
+  }
+  .billing-filter-btn.active {
+    background: var(--uc-vf);
+    color: var(--uc-bw);
+    border-color: var(--uc-vf);
+  }
+  /* Table rows */
+  #invoices-table td {
+    padding: 0.85rem 1rem;
+    vertical-align: middle;
+    border-color: var(--uc-gxl);
+    font-size: 0.8rem;
+    color: var(--uc-gc);
+  }
+  #invoices-table td:first-child {
+    padding-left: 1.25rem;
+  }
+  #invoices-table td:last-child {
+    padding-right: 1.25rem;
+  }
+  /* Statut badges */
+  .inv-badge {
+    font-family: var(--uc-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .inv-badge.paid {
+    background: var(--uc-vxl);
+    color: var(--uc-vm);
+  }
+  .inv-badge.pending {
+    background: #fff7e6;
+    color: #92400e;
+  }
+  .inv-badge.failed {
+    background: #fef2f2;
+    color: #991b1b;
+  }
+  /* Aperçu facture */
+  .invoice-preview {
+    padding: 2rem;
+    font-family: var(--uc-fb);
+    font-size: 0.82rem;
+    color: var(--uc-gc);
+  }
+  .invoice-preview .inv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--uc-bs);
+    margin-bottom: 1.5rem;
+  }
+  .invoice-preview .inv-table th {
+    background: var(--uc-gxl);
+    font-family: var(--uc-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--uc-gm);
+    padding: 0.5rem 0.75rem;
+    font-weight: 700;
+    border: none;
+  }
+  .invoice-preview .inv-table td {
+    padding: 0.6rem 0.75rem;
+    border-color: var(--uc-gxl);
+    font-size: 0.8rem;
+  }
+  .invoice-preview .inv-total {
+    display: flex;
+    justify-content: flex-end;
+    gap: 2rem;
+    padding: 1rem 0;
+    border-top: 2px solid var(--uc-bs);
+    margin-top: 0.5rem;
+  }
+  /* Pagination */
+  .page-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid var(--uc-bs);
+    background: #fff;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.12s;
+    color: var(--uc-gc);
+  }
+  .page-btn:hover {
+    border-color: var(--uc-vc);
+    color: var(--uc-vm);
+  }
+  .page-btn.active {
+    background: var(--uc-vf);
+    color: #fff;
+    border-color: var(--uc-vf);
+  }
+</style>

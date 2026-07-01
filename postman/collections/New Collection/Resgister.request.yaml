@@ -1,0 +1,24 @@
+$kind: http-request
+name: Resgister
+url: http://localhost:8080/api/auth/register
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"prenom\": \"Test\",\r
+
+    \    \"nom\": \"User\",\r
+
+    \    \"email\": \"test@test.fr\",\r
+
+    \    \"password\": \"test1234\",\r
+
+    \    \"siret\": \"84512367800024\",\r
+
+    \    \"entreprise\": \"Test SAS\",\r
+
+    \    \"role\": \"PRO\"\r
+
+    }"
+order: 3841248825559483

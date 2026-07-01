@@ -1,0 +1,20 @@
+$kind: http-request
+name: Auth login
+url: http://localhost:8080/api/auth/login
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"email\": \"contact@atelier-terra.fr\",\r
+
+    \    \"password\": \"test123\"\r
+
+    }\r
+
+    \r
+
+    \r
+
+    //$2a$10$xmGZSuFxSgWVW7Br8p6u0Oq07ofGrGjupQH6K96e5jTdMi6IEpTOC"
+order: 836560353000205

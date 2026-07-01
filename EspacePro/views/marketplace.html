@@ -1,0 +1,295 @@
+<!--
+  marketplace.html — UpcycleConnect Espace Pro
+  Module C — Tasks 46-47 : Marketplace + checkout Stripe
+  Injectée dans #pro-view par router.js
+-->
+
+<!-- ══ EN-TÊTE ══ -->
+<div class="d-flex align-items-start justify-content-between mb-3 flex-wrap gap-2">
+  <div>
+    <h1 class="mb-1" style="font-size:1.6rem">Marketplace</h1>
+    <p class="text-muted mb-0" style="font-size:.8rem">
+      Annonces validées par UpcycleConnect · Paiement sécurisé Stripe
+    </p>
+  </div>
+  <div class="d-flex align-items-center gap-2">
+    <span class="badge px-3 py-2"
+          style="background:var(--uc-vxl);color:var(--uc-vm);font-family:var(--uc-mono);font-size:.65rem"
+          id="results-count">– annonces</span>
+    <div class="dropdown">
+      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+        <i class="bi bi-sort-down me-1"></i><span id="sort-label">Plus récent</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+        <li><a class="dropdown-item small" href="#"
+               onclick="ProModules.marketplace.setSort('recent',this)">Plus récent</a></li>
+        <li><a class="dropdown-item small" href="#"
+               onclick="ProModules.marketplace.setSort('price_asc',this)">Prix croissant</a></li>
+        <li><a class="dropdown-item small" href="#"
+               onclick="ProModules.marketplace.setSort('price_desc',this)">Prix décroissant</a></li>
+        <li><a class="dropdown-item small" href="#"
+               onclick="ProModules.marketplace.setSort('weight',this)">Poids décroissant</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FILTRES ══ -->
+<div class="pro-card p-3 mb-3">
+  <div class="row g-2 align-items-end">
+
+    <!-- Recherche texte -->
+    <div class="col-12 col-md-4">
+      <label class="form-label mb-1"
+             style="font-family:var(--uc-mono);font-size:.58rem;letter-spacing:.1em;
+                    color:var(--uc-gm);text-transform:uppercase">
+        Recherche
+      </label>
+      <div class="input-group input-group-sm">
+        <span class="input-group-text bg-light border-end-0">
+          <i class="bi bi-search text-muted" style="font-size:.75rem"></i>
+        </span>
+        <input type="text" class="form-control border-start-0 bg-light"
+               id="search-input" placeholder="Palettes, métal, denim…"
+               oninput="ProModules.marketplace.onSearchInput(this.value)">
+      </div>
+    </div>
+
+    <!-- Matériaux -->
+    <div class="col-12 col-md-4">
+      <label class="form-label mb-1"
+             style="font-family:var(--uc-mono);font-size:.58rem;letter-spacing:.1em;
+                    color:var(--uc-gm);text-transform:uppercase">
+        Matériau
+      </label>
+      <div class="d-flex flex-wrap gap-1" id="material-filters">
+        <!-- Injecté par marketplace.js -->
+      </div>
+    </div>
+
+    <!-- État + Type -->
+    <div class="col-6 col-md-2">
+      <label class="form-label mb-1"
+             style="font-family:var(--uc-mono);font-size:.58rem;letter-spacing:.1em;
+                    color:var(--uc-gm);text-transform:uppercase">
+        État
+      </label>
+      <select class="form-select form-select-sm" id="condition-filter"
+              onchange="ProModules.marketplace.setFilter('condition', this.value)">
+        <option value="">Tous</option>
+        <option value="bon">Bon</option>
+        <option value="moyen">Moyen</option>
+        <option value="don">Don gratuit</option>
+      </select>
+    </div>
+
+    <div class="col-6 col-md-2">
+      <label class="form-label mb-1"
+             style="font-family:var(--uc-mono);font-size:.58rem;letter-spacing:.1em;
+                    color:var(--uc-gm);text-transform:uppercase">
+        Distance
+      </label>
+      <select class="form-select form-select-sm" id="distance-filter"
+              onchange="ProModules.marketplace.setFilter('distance', this.value)">
+        <option value="">Toute la France</option>
+        <option value="2">< 2 km</option>
+        <option value="5" selected>< 5 km</option>
+        <option value="10">< 10 km</option>
+        <option value="20">< 20 km</option>
+      </select>
+    </div>
+
+  </div>
+
+  <!-- Tags actifs -->
+  <div class="d-flex gap-1 mt-2 flex-wrap" id="active-tags"></div>
+</div>
+
+<!-- ══ GRILLE ITEMS ══ -->
+<div class="row g-3" id="market-grid">
+  <div class="col-12 text-center py-5">
+    <div class="spinner-border text-success" role="status"></div>
+    <div class="text-muted small mt-2">Chargement des annonces…</div>
+  </div>
+</div>
+
+<!-- Pagination -->
+<div class="d-flex justify-content-center gap-1 mt-4" id="market-pagination"></div>
+
+<!-- Badge Stripe -->
+<div class="d-flex align-items-center justify-content-center gap-2 mt-4 mb-2">
+  <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-pill"
+       style="background:var(--uc-gxl);border:1px solid var(--uc-bs)">
+    <i class="bi bi-shield-lock-fill" style="color:#635BFF;font-size:.85rem"></i>
+    <span style="font-size:.68rem;color:var(--uc-gm);font-family:var(--uc-mono)">
+      Paiements sécurisés par <strong style="color:#635BFF">Stripe</strong>
+      · Carte, virement, BNPL
+    </span>
+  </div>
+</div>
+
+<!-- ══ MODAL DÉTAIL ITEM ══ -->
+<div class="modal fade" id="modal-item-detail" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 rounded-4">
+      <div class="modal-header border-0" style="padding:1.25rem 1.5rem .5rem">
+        <h5 class="modal-title" style="font-family:var(--uc-fd);color:var(--uc-vf)"
+            id="modal-item-title">–</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 py-2" id="modal-item-body">
+        <!-- Injecté par marketplace.js -->
+      </div>
+      <div class="modal-footer border-0 px-4 pb-4 gap-2" id="modal-item-footer">
+        <button type="button" class="btn btn-outline-secondary rounded-3"
+                data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn rounded-3 fw-bold"
+                id="btn-checkout"
+                style="background:var(--uc-vf);color:#fff;min-width:160px"
+                onclick="ProModules.marketplace.startCheckout()">
+          <i class="bi bi-bag-check me-1"></i>
+          <span id="checkout-label">Acheter</span>
+          <span id="checkout-spinner" class="spinner-border spinner-border-sm ms-1"
+                style="display:none" role="status"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL CONFIRMATION STRIPE ══ -->
+<div class="modal fade" id="modal-stripe-confirm" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:420px">
+    <div class="modal-content border-0 rounded-4">
+      <div class="modal-body p-4 text-center">
+        <div style="font-size:3rem;margin-bottom:.75rem">🎉</div>
+        <h5 style="font-family:var(--uc-fd);color:var(--uc-vf);margin-bottom:.5rem">
+          Redirection vers Stripe
+        </h5>
+        <p class="text-muted small mb-3" id="stripe-confirm-text">
+          Vous allez être redirigé vers la page de paiement sécurisée Stripe.
+        </p>
+        <div class="d-flex align-items-center justify-content-center gap-2 mb-3"
+             style="background:var(--uc-gxl);border-radius:12px;padding:.75rem">
+          <i class="bi bi-shield-lock-fill" style="color:#635BFF"></i>
+          <span style="font-size:.72rem;font-family:var(--uc-mono);color:var(--uc-gm)">
+            Connexion chiffrée SSL · Données protégées
+          </span>
+        </div>
+        <div class="d-flex gap-2 justify-content-center">
+          <button class="btn btn-outline-secondary rounded-3 btn-sm"
+                  data-bs-dismiss="modal">Annuler</button>
+          <button class="btn rounded-3 btn-sm fw-bold"
+                  id="btn-go-stripe"
+                  style="background:#635BFF;color:#fff"
+                  onclick="ProModules.marketplace.redirectToStripe()">
+            <i class="bi bi-box-arrow-up-right me-1"></i>Payer sur Stripe
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Chips matériaux */
+  .mat-chip {
+    padding: .25rem .65rem;
+    border-radius: 20px;
+    font-size: .68rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1.5px solid var(--uc-bs);
+    background: #fff;
+    color: var(--uc-gm);
+    transition: all .12s;
+    white-space: nowrap;
+  }
+  .mat-chip:hover   { border-color: var(--uc-vc); color: var(--uc-vm); }
+  .mat-chip.active  { background: var(--uc-vf); color: #fff; border-color: var(--uc-vf); }
+
+  /* Cards marché */
+  .market-card {
+    background: #fff;
+    border: 1px solid var(--uc-bs);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow .15s, transform .12s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .market-card:hover {
+    box-shadow: 0 6px 20px rgba(28,61,43,.12);
+    transform: translateY(-2px);
+  }
+  .market-card-img {
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .market-card-body {
+    padding: .9rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .mat-tag {
+    font-size: .58rem;
+    font-family: var(--uc-mono);
+    font-weight: 700;
+    padding: .15rem .4rem;
+    border-radius: 5px;
+    text-transform: uppercase;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+  }
+  .cond-tag {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: .55rem;
+    font-family: var(--uc-mono);
+    font-weight: 700;
+    padding: .12rem .35rem;
+    border-radius: 4px;
+    background: rgba(255,255,255,.85);
+    color: var(--uc-gc);
+    text-transform: uppercase;
+  }
+
+  /* Tags actifs */
+  .active-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    background: var(--uc-vxl);
+    border-radius: 20px;
+    padding: .18rem .55rem;
+    font-size: .65rem;
+    font-weight: 600;
+    color: var(--uc-vm);
+  }
+  .active-tag button {
+    background: none; border: none; padding: 0;
+    color: var(--uc-vm); cursor: pointer; font-size: .6rem;
+    line-height: 1;
+  }
+
+  /* Pagination */
+  .mkt-page-btn {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px; border: 1px solid var(--uc-bs);
+    background: #fff; font-size: .78rem; cursor: pointer;
+    transition: all .12s; color: var(--uc-gc);
+  }
+  .mkt-page-btn:hover  { border-color: var(--uc-vc); color: var(--uc-vm); }
+  .mkt-page-btn.active { background: var(--uc-vf); color: #fff; border-color: var(--uc-vf); }
+</style>

@@ -1,0 +1,253 @@
+<!--
+  subscription.html — UpcycleConnect Espace Pro
+  Module B — Task 42 : Gestion contrat + changement de plan
+  Injectée dans #pro-view par router.js
+-->
+
+<!-- ══ EN-TÊTE ══ -->
+<div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-2">
+  <div>
+    <h1 class="mb-1" style="font-size:1.6rem">Mon Abonnement</h1>
+    <p class="text-muted mb-0" style="font-size:.8rem">
+      Gérez votre contrat, changez de plan ou annulez à tout moment.
+    </p>
+  </div>
+  <span class="badge px-3 py-2 rounded-pill" id="sub-status-badge"
+        style="font-family:var(--uc-mono);font-size:.65rem;background:var(--uc-gxl);color:var(--uc-gm)">
+    Chargement…
+  </span>
+</div>
+
+<!-- ══ PLAN ACTUEL ══ -->
+<div class="row g-3 mb-4">
+  <div class="col-12">
+    <div class="pro-card" id="current-plan-card">
+      <div class="text-center py-4">
+        <div class="spinner-border text-success" role="status"></div>
+        <div class="text-muted small mt-2">Chargement du contrat…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ COMPARATIF DES PLANS ══ -->
+<div class="mb-3">
+  <h2 style="font-size:1.1rem;color:var(--uc-vf)">
+    <i class="bi bi-stars me-2" style="color:#F59E0B"></i>Changer de plan
+  </h2>
+  <p class="text-muted" style="font-size:.8rem">
+    Comparez les offres et basculez en un clic. Changement effectif immédiatement.
+  </p>
+</div>
+
+<div class="row g-3 mb-4" id="plans-grid">
+  <!-- Injecté par subscription.js -->
+  <div class="col-12 text-center py-4">
+    <div class="spinner-border text-success" role="status"></div>
+  </div>
+</div>
+
+<!-- ══ DÉTAILS DU CONTRAT ══ -->
+<div class="row g-3 mb-4">
+  <div class="col-12 col-lg-6">
+    <div class="pro-card h-100">
+      <div class="pro-card-title">
+        <i class="bi bi-file-earmark-text me-2"></i>Détails du contrat
+      </div>
+      <div id="contract-details">
+        <div class="text-center py-3">
+          <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <div class="pro-card h-100">
+      <div class="pro-card-title">
+        <i class="bi bi-shield-check me-2" style="color:var(--uc-vc)"></i>Droits & Limites
+      </div>
+      <div id="plan-limits">
+        <div class="text-center py-3">
+          <div class="spinner-border spinner-border-sm text-success" role="status"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ZONE DANGER ══ -->
+<div class="pro-card border-danger-subtle">
+  <div class="pro-card-title text-danger">
+    <i class="bi bi-exclamation-triangle me-2"></i>Zone de danger
+  </div>
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <div style="font-size:.82rem;font-weight:600;color:var(--uc-gc)">Annuler l'abonnement</div>
+      <div style="font-size:.72rem;color:var(--uc-gm)">
+        Votre accès Pro reste actif jusqu'à la fin de la période payée.
+        Aucun remboursement partiel.
+      </div>
+    </div>
+    <button class="btn btn-sm btn-outline-danger"
+            onclick="ProModules.subscription.confirmCancel()"
+            id="btn-cancel-sub">
+      <i class="bi bi-x-circle me-1"></i>Annuler l'abonnement
+    </button>
+  </div>
+</div>
+
+<!-- ══ MODAL CONFIRMATION CHANGEMENT DE PLAN ══ -->
+<div class="modal fade" id="modal-change-plan" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" style="font-family:var(--uc-fd);color:var(--uc-vf)">
+          Confirmer le changement de plan
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modal-plan-body">
+        <!-- Injecté dynamiquement -->
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary rounded-3"
+                data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn rounded-3" id="btn-confirm-plan"
+                style="background:var(--uc-vf);color:#fff;font-weight:700"
+                onclick="ProModules.subscription.confirmUpgrade()">
+          <span id="confirm-plan-label">Confirmer</span>
+          <span id="confirm-plan-spinner"
+                class="spinner-border spinner-border-sm ms-2"
+                style="display:none" role="status"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL CONFIRMATION ANNULATION ══ -->
+<div class="modal fade" id="modal-cancel-sub" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>Annuler l'abonnement
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning rounded-3 mb-3">
+          <strong>Attention :</strong> Votre compte Pro sera rétrogradé à la fin de
+          la période en cours. Vos projets et données seront conservés mais
+          certaines fonctionnalités deviendront inaccessibles.
+        </div>
+        <p style="font-size:.82rem;color:var(--uc-gc)">
+          Pour confirmer, saisissez <strong>ANNULER</strong> ci-dessous :
+        </p>
+        <input type="text" class="form-control rounded-3" id="cancel-confirm-input"
+               placeholder="Tapez ANNULER" autocomplete="off">
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary rounded-3"
+                data-bs-dismiss="modal">Conserver l'abonnement</button>
+        <button type="button" class="btn btn-danger rounded-3" id="btn-confirm-cancel"
+                onclick="ProModules.subscription.executeCancellation()" disabled>
+          <span id="cancel-label">Confirmer l'annulation</span>
+          <span id="cancel-spinner" class="spinner-border spinner-border-sm ms-2"
+                style="display:none" role="status"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Card plan */
+  .plan-card {
+    border: 2px solid var(--uc-bs);
+    border-radius: 16px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, transform .1s;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .plan-card:hover:not(.plan-current) {
+    border-color: var(--uc-vc);
+    box-shadow: 0 4px 16px rgba(28,61,43,.1);
+    transform: translateY(-2px);
+  }
+  .plan-card.plan-current {
+    border-color: var(--uc-vf);
+    background: var(--uc-vxl);
+    cursor: default;
+  }
+  .plan-card.plan-premium {
+    border-color: #F59E0B;
+  }
+  .plan-card.plan-premium::before {
+    content: '★ RECOMMANDÉ';
+    position: absolute;
+    top: 12px; right: -20px;
+    background: linear-gradient(135deg,#F59E0B,#D97706);
+    color: #fff;
+    font-size: .55rem;
+    font-family: var(--uc-mono);
+    font-weight: 700;
+    letter-spacing: .1em;
+    padding: .2rem 2rem;
+    transform: rotate(35deg);
+  }
+  .plan-price {
+    font-family: var(--uc-fd);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--uc-vf);
+  }
+  .plan-price sub {
+    font-size: .8rem;
+    font-family: var(--uc-fb);
+    font-weight: 400;
+    color: var(--uc-gm);
+  }
+  .plan-feature {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .78rem;
+    padding: .3rem 0;
+    border-bottom: 1px solid var(--uc-gxl);
+    color: var(--uc-gc);
+  }
+  .plan-feature:last-child { border-bottom: none; }
+  .plan-feature .feat-check { color: var(--uc-vc); font-size: .8rem; }
+  .plan-feature .feat-cross  { color: var(--uc-gl); font-size: .8rem; }
+  .plan-feature .feat-lock   { color: #F59E0B; font-size: .75rem; }
+  /* Contrat detail rows */
+  .contract-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: .55rem 0; border-bottom: 1px solid var(--uc-gxl);
+    font-size: .8rem;
+  }
+  .contract-row:last-child { border-bottom: none; }
+  .contract-label { color: var(--uc-gm); }
+  .contract-value { font-weight: 600; color: var(--uc-gc); font-family: var(--uc-mono); font-size: .75rem; }
+  /* Limites */
+  .limit-row {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .55rem 0; border-bottom: 1px solid var(--uc-gxl);
+  }
+  .limit-row:last-child { border-bottom: none; }
+  .limit-icon { width: 28px; text-align: center; font-size: .9rem; }
+  .limit-label { flex: 1; font-size: .78rem; color: var(--uc-gc); }
+  .limit-value {
+    font-family: var(--uc-mono); font-size: .72rem; font-weight: 700;
+    padding: .15rem .45rem; border-radius: 6px;
+  }
+  .limit-value.unlimited { background: var(--uc-vxl); color: var(--uc-vm); }
+  .limit-value.limited   { background: #FFF7E6;        color: #92400E; }
+  .limit-value.locked    { background: var(--uc-gxl);  color: var(--uc-gm); }
+</style>
